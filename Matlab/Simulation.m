@@ -33,11 +33,11 @@ power(6)= -10;
 test=laplacian(coupling);
 
 [V,D]=eig(test);
-inV=inv(V);
-Q= inV*power;
+Q= power\V;
 damping=0.9;
 
 [t,y] = ode45(@(t,y) f(t,y,damping,D,Q),[0 20],[0 0 0 0 0 0 0 0 0 0 0 0]);
+
 save('test')
 size(y,1)
 theta=zeros(size(y,1),size(y,2)/2);
@@ -49,12 +49,13 @@ for i=1:size(y,1)
     theta(i,5)=dot(y(i,[1,3,5,7,9,11]),V(5,:));
     theta(i,6)=dot(y(i,[1,3,5,7,9,11]),V(6,:));
 end
-%plot(t,y(:,1),t,y(:,3),t,y(:,5),t,y(:,7),t,y(:,9),t,y(:,11))
-%plot(t,theta(:,1),t,theta(:,2),t,theta(:,3),t,theta(:,4),t,theta(:,5),t,theta(:,6))
+figure(4)
+plot(t,y(:,1),t,y(:,3),t,y(:,5),t,y(:,7),t,y(:,9),t,y(:,11),'LineWidth',1.25)
+%plot(t,theta(:,1),t,theta(:,2),t,theta(:,3),t,theta(:,4),t,theta(:,5),t,theta(:,6),'LineWidth',1.25)
 
-%plot(t,KOUPLING*sin(theta(:,1)-theta(:,2)),t,KOUPLING*sin(theta(:,1)-theta(:,3)), t,KOUPLING*sin(theta(:,1)-theta(:,5)), t,KOUPLING*sin(theta(:,4)-theta(:,3)),t,KOUPLING*sin(theta(:,4)-theta(:,5)),t,KOUPLING*sin(theta(:,6)-theta(:,5)));
+%plot(t,KOUPLING*sin(theta(:,1)-theta(:,2)),t,KOUPLING*sin(theta(:,1)-theta(:,3)), t,KOUPLING*sin(theta(:,1)-theta(:,5)), t,KOUPLING*sin(theta(:,4)-theta(:,3)),t,KOUPLING*sin(theta(:,4)-theta(:,5)),t,KOUPLING*sin(theta(:,5)-theta(:,6)),'LineWidth',1.25);
 
-plot(t,KOUPLING*sin(theta(:,6)-theta(:,5)));
+%plot(t,KOUPLING*sin(theta(:,6)-theta(:,5)));
 
 
 function dydt = f(t,y,damp,eig,Q)

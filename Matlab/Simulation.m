@@ -1,4 +1,4 @@
-
+clear; clc; close all;
 coupling = zeros(6,6);
 power = zeros(6,1);
 KOUPLING=140;
@@ -15,28 +15,28 @@ coupling(5,1)=KOUPLING;
 coupling(4,3)=KOUPLING;
 coupling(3,4)=KOUPLING;
 
-coupling(4,5)=KOUPLING;
-coupling(5,4)=KOUPLING;
+coupling(4,5)=0;
+coupling(5,4)=0;
 
 coupling(6,5)=KOUPLING;
 coupling(5,6)=KOUPLING;
 
 
 
-power(1)= 40;
-power(2)= -20;
-power(3)= -25;
-power(4)= 40;
-power(5)= -25;
-power(6)= -10;
+power(1,1)= 40;
+power(2,1)= -20;
+power(3,1)= -25;
+power(4,1)= 40;
+power(5,1)= -25;
+power(6,1)= -10;
 
 test=laplacian(coupling);
 
-[V,D]=eig(test);
-Q= power\V;
+[V,eig]=eig(test);
+Q= V\power;
 damping=0.9;
 
-[t,y] = ode45(@(t,y) f(t,y,damping,D,Q),[0 20],[0 0 0 0 0 0 0 0 0 0 0 0]);
+[t,y] = ode45(@(t,y) f(t,y,damping,eig,Q),[0 20],[0 0 0 0 0 0 0 0 0 0 0 0]);
 
 save('test')
 size(y,1)
@@ -51,6 +51,8 @@ for i=1:size(y,1)
 end
 figure(4)
 plot(t,y(:,1),t,y(:,3),t,y(:,5),t,y(:,7),t,y(:,9),t,y(:,11),'LineWidth',1.25)
+xlabel('Time(s)') 
+ylabel('Eta') 
 %plot(t,theta(:,1),t,theta(:,2),t,theta(:,3),t,theta(:,4),t,theta(:,5),t,theta(:,6),'LineWidth',1.25)
 
 %plot(t,KOUPLING*sin(theta(:,1)-theta(:,2)),t,KOUPLING*sin(theta(:,1)-theta(:,3)), t,KOUPLING*sin(theta(:,1)-theta(:,5)), t,KOUPLING*sin(theta(:,4)-theta(:,3)),t,KOUPLING*sin(theta(:,4)-theta(:,5)),t,KOUPLING*sin(theta(:,5)-theta(:,6)),'LineWidth',1.25);

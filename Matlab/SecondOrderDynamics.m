@@ -15,8 +15,8 @@ KOUPLING=140;
 
 A =  zeros(2,2);
 
-A(1,2)=0;
-A(2,1)=0;
+A(1,2)=KOUPLING;
+A(2,1)=KOUPLING;
 
 A(1,3)=KOUPLING;
 A(3,1)=KOUPLING;
@@ -52,7 +52,7 @@ P(6)= -10;
 % Perform diagonalization
 [V,Lambda] = eig(L);
 
-lookat=[zeros(n), eye(n); -L, -gamma*eye(n)]
+lookat=[zeros(n), eye(n); -L, -gamma*eye(n)];
 
 % Define the linear, second order, dynamics
 %
@@ -86,10 +86,11 @@ ylabel('Velocities')
 %                                  [  O_n    inv(V) ]
 %
 Q = V \ P;
-diagonalized_dynamics = @(t,x) [zeros(n), eye(n); -Lambda, -gamma*eye(n)] * x + [zeros(n,1); Q];
+diagonalized_dynamics = @(t,x) [zeros(n), eye(n); -Lambda, -gamma*eye(n)] * x + [zeros(n,1); eye(n)*Q];
 
 % Run ode45 for diagonalized dynamics
-y0 = [V, zeros(n); zeros(n), V] \ x0;
+y0 = zeros(1,2*n);
+%y0 = [V, zeros(n); zeros(n), V] \ x0
 [T, Y] = ode45(diagonalized_dynamics, T, y0);
 
 figure(2)

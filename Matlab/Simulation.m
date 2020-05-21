@@ -12,11 +12,11 @@ coupling(3,1)=KOUPLING;
 coupling(1,5)=KOUPLING;
 coupling(5,1)=KOUPLING;
 
-coupling(4,3)=KOUPLING;
-coupling(3,4)=KOUPLING;
+coupling(4,3)=0;
+coupling(3,4)=0;
 
-coupling(4,5)=0;
-coupling(5,4)=0;
+coupling(4,5)=KOUPLING;
+coupling(5,4)=KOUPLING;
 
 coupling(6,5)=KOUPLING;
 coupling(5,6)=KOUPLING;

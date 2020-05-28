@@ -3,6 +3,7 @@ coupling = zeros(6,6);
 power = zeros(6,1);
 KOUPLING=140;
 
+%coupling matrix
 coupling(1,2)=KOUPLING;
 coupling(2,1)=KOUPLING;
 
@@ -22,7 +23,7 @@ coupling(6,5)=KOUPLING;
 coupling(5,6)=KOUPLING;
 
 
-
+%power of each node.
 power(1,1)= 40;
 power(2,1)= -20;
 power(3,1)= -25;

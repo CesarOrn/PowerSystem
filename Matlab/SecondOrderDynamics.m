@@ -62,7 +62,7 @@ lookat=[zeros(n), eye(n); -L, -gamma*eye(n)];
 linear_dynamics = @(t,x) [zeros(n), eye(n); -L, -gamma*eye(n)] * x + [zeros(n,1); P];
 
 % Random initial conditions
-x0 = rand(2*n,1);
+x0 = zeros(1,2*n);
 
 % Run ode45 
 [T,X] = ode45(linear_dynamics, [0,30], x0);

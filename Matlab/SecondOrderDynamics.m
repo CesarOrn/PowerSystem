@@ -7,52 +7,25 @@ clear; clc; close all;
 
 
 % Dimension of the system 
-n = 6;
-
-KOUPLING=140;
+n = 100;
 
 % Create a (random) matrix 
-
-A =  zeros(2,2);
-
-A(1,2)=KOUPLING;
-A(2,1)=KOUPLING;
-
-A(1,3)=KOUPLING;
-A(3,1)=KOUPLING;
-
-A(1,5)=KOUPLING;
-A(5,1)=KOUPLING;
-
-A(4,3)=KOUPLING;
-A(3,4)=KOUPLING;
-
-A(4,5)=KOUPLING;
-A(5,4)=KOUPLING;
-
-A(6,5)=KOUPLING;
-A(5,6)=KOUPLING;
+A =  full(BAgraph(n));
+%A = A-diag(diag(A));
+%A= A+transpose(A);
 
 % Create the Laplacian
 L = diag(sum(A,2)) - A;
-
-[V,Lambda] = eig(L);
 
 % Damping
 gamma = 0.9;
 
 % Forcing vector 
-P = zeros(n,1);
-P(1)= 40;
-P(2)= -20;
-P(3)= -25;
-P(4)= 40;
-P(5)= -25;
-P(6)= -10;
+P = rand(n,1);
+P = P -mean(P);
+
 % Perform diagonalization
 [V,Lambda] = eig(L);
-
-lookat=[zeros(n), eye(n); -L, -gamma*eye(n)];
 
 % Define the linear, second order, dynamics
 %
@@ -62,10 +35,10 @@ lookat=[zeros(n), eye(n); -L, -gamma*eye(n)];
 linear_dynamics = @(t,x) [zeros(n), eye(n); -L, -gamma*eye(n)] * x + [zeros(n,1); P];
 
 % Random initial conditions
-x0 = zeros(1,2*n);
+x0 = zeros(2*n,1);
 
 % Run ode45 
-[T,X] = ode45(linear_dynamics, [0,30], x0);
+[T,X] = ode45(linear_dynamics, [0,10], x0);
 
 % Make some plots
 figure(1)
@@ -86,11 +59,10 @@ ylabel('Velocities')
 %                                  [  O_n    inv(V) ]
 %
 Q = V \ P;
-diagonalized_dynamics = @(t,x) [zeros(n), eye(n); -Lambda, -gamma*eye(n)] * x + [zeros(n,1); eye(n)*Q];
+diagonalized_dynamics = @(t,x) [zeros(n), eye(n); -Lambda, -gamma*eye(n)] * x + [zeros(n,1); Q];
 
 % Run ode45 for diagonalized dynamics
-y0 = zeros(1,2*n);
-%y0 = [V, zeros(n); zeros(n), V] \ x0
+y0 = [V, zeros(n); zeros(n), V] \ x0;
 [T, Y] = ode45(diagonalized_dynamics, T, y0);
 
 figure(2)
@@ -125,3 +97,40 @@ subplot(2,1,2);
 plot(T,log10(err(:,1+n:2*n)));
 xlabel('Time')
 ylabel('Velocity Error');
+
+
+
+(sum(sum(A)))/2
+k=0;
+
+for i = 1:n
+    upper=n-i;
+   for j = n-upper:n
+       if(A(i,j)~=0)
+           k=k+1;
+           etaTheta(k,:)=V(j,:)-V(i,:);
+           etaSort(k,:)= sort(abs(etaTheta(k,:)),2,'descend');
+           k
+           [etaSort(k,1)/etaSort(k,2)]
+           ratio{k,1}=[etaSort(k,1)/etaSort(k,2)];
+           strcat('link:',num2str(j),num2str(i));
+           ratio{k,2}=strcat('link: ',num2str(j),' , ',num2str(i));
+       end        
+   end
+end
+k=0;
+size(etaTheta,1);
+for i=1:size(etaTheta,1)
+    for j=1:n
+        k=k+1;
+        data(k,:)= [i,etaTheta(i,j)];
+    end
+end
+
+
+
+figure(4);
+title('Plot Theta_j-Theta_i');
+scatter(data(:,1),data(:,2));
+xlabel('Line');
+ylabel('Eta coefficient (Theta_j-Theat_i)');

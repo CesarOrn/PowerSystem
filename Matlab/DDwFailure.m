@@ -1,4 +1,31 @@
-function [val]=DDwFailure(coupling,gamma,power,n,Time,numLines)
+%coupling: Coupling matrix.
+%gamma:
+%power:
+%Time set time to calculate ODE.
+%numLines: number of lines of line failures.
+
+%val: cell containing data
+%k are the diffrent simulation
+
+%val{1,k}=coupling;
+%val{2,k}=EigenVector;
+%val{3,k}=Lambdas;
+%val{4,k}=Q;
+%val{5,k}=Last values first part simulation;
+
+%val{6,k}=coupling after failure;
+%val{7,k}=eigenVector after failure;
+%val{8,k}=Lambda  after failure;
+%val{9,k}=Q After failure;
+%val{9,k} =Last values second part simulation;
+        
+%val{10,k}=Values of all simulation;
+%val{11,k}=Time Values.
+
+function [val]=DDwFailure(coupling,gamma,power,Time,numLines)
+
+% number of elements
+n=size(coupling,1);
 
 % Create the Laplacian
 L = diag(sum(coupling,2)) - coupling;

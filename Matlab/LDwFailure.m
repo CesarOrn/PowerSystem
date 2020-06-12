@@ -1,4 +1,29 @@
-function [val]= LDwFailure(coupling,gamma,power,n,Time,numLines)
+%coupling: Coupling matrix.
+%gamma:
+%power:
+%Time set time to calculate ODE.
+%numLines: number of lines of line failures.
+
+%val: cell containing data
+%k are the diffrent simulation
+
+%val{1,k}=coupling
+%val{2,k}=Laplacian
+%val{3,k}=Last Values if simulaiton before line failure
+
+%val{4,k}=coupling after failing Line
+%val{5,k}=Laplacian After Failure
+%val{6,k}=Last values after line failure
+
+%val{7,k}=All data of velocities and position
+%val{8,k}=Time for whole simulation
+
+
+function [val]= LDwFailure(coupling,gamma,power,Time,numLines)
+
+% number of elements
+n=size(coupling,1);
+
 % Create the Laplacian
 L = diag(sum(coupling,2)) - coupling;
 

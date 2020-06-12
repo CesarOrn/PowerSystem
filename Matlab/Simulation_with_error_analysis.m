@@ -7,7 +7,7 @@ clear; clc; close all;
 
 
 % Dimension of the system 
-n =1000;
+n =100;
 
 % Create a (random) matrix 
 A =  full(BAgraph(n));
@@ -29,7 +29,7 @@ Time = 0:.0018:10;
 
 % Perform diagonalization
 
-val=LDwFailure(A,gamma,P,n,Time,1);
+val=LDwFailure(A,gamma,P,Time,1);
 
 % Make some plots
 figure(1)
@@ -51,20 +51,19 @@ ylabel('Velocities')
 %  To diagonalize, pre-multiply by [ inv(V)   O_n   ]
 %                                  [  O_n    inv(V) ]
 %
-valDD=DDwFailure(A,gamma,P,n,Time,1);
-valDD{1,1}
+valDD=DDwFailure(A,gamma,P,Time,1);
 
-A=valDD{1,1}
-V=valDD{2,1}
-Lambda=valDD{3,1}
-Q=valDD{4,1}
+A=valDD{1,1};
+V=valDD{2,1};
+Lambda=valDD{3,1};
+Q=valDD{4,1};
 
 Y=valDD{10,1};
 T=valDD{11,1};
 
 [Line1, Coeff1]=findLines(A,V); %to find flow coefficients and labels
-Line=Line1' % Transpose to plug into error approximation function
-Coeff=Coeff1'
+Line=Line1' ;% Transpose to plug into error approximation function
+Coeff=Coeff1';
 Q1=Q(2:n); % Removing the zero in the first positons so that we don't get infinity in the later calculations
 Lambda1=zeros([n-1,1]);
 for i=1:n-1
@@ -75,15 +74,15 @@ omega=sqrt(Lambda1);
 
 zeta=1./(2.*omega);
 SS1= Q1./Lambda1;
-SS=[0;SS1]  % Steady state
+SS=[0;SS1];  % Steady state
 pt1=pi./(omega.*sqrt(1-zeta.^2));
-pt=[0;pt1] % Peak time
+pt=[0;pt1]; % Peak time
 peak1=Q1./Lambda1.*(1+exp(-pi.*zeta./sqrt(1-zeta.^2)));
-peak=[0;peak1] % Peak
+peak=[0;peak1]; % Peak
 
 
  
-[SSerror,SSerror2,l]=Errorapproxfunc(size(Coeff),Coeff,SS) % error approx
+[SSerror,SSerror2,l]=Errorapproxfunc(size(Coeff),Coeff,SS) ;% error approx
 for i= 1:l
     Maxerror(:,i)=max(SSerror2(:,i)); %matrix of max errors of each flow
 end

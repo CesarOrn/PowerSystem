@@ -5,12 +5,31 @@ clear; clc; close all;
 %
 % To use ode45, we convert the n second order equations 2n first order equations 
 
+KOUPLING=140
 
 % Dimension of the system 
-n = 100;
+n = 6;
 
-% Create a (random) matrix 
-A =  full(BAgraph(n));
+% Create a (random) matrix
+A(1,2)=KOUPLING;
+A(2,1)=KOUPLING;
+
+A(1,3)=0;
+A(3,1)=0;
+
+A(1,5)=KOUPLING;
+A(5,1)=KOUPLING;
+
+A(4,3)=KOUPLING;
+A(3,4)=KOUPLING;
+
+A(4,5)=KOUPLING;
+A(5,4)=KOUPLING;
+
+A(6,5)=KOUPLING;
+A(5,6)=KOUPLING;
+
+%A =  full(BAgraph(n));
 %A = A-diag(diag(A));
 %A= A+transpose(A);
 
@@ -95,37 +114,14 @@ ylabel('Position Error');
 
 subplot(2,1,2);
 plot(T,log10(err(:,1+n:2*n)));
-xlabel('Time')
+xlabel('Time');
 ylabel('Velocity Error');
 
 
 
-(sum(sum(A)))/2
-k=0;
+[line,data]=findLines(A,V);
+data = transpose(data);
 
-for i = 1:n
-    upper=n-i;
-   for j = n-upper:n
-       if(A(i,j)~=0)
-           k=k+1;
-           etaTheta(k,:)=V(j,:)-V(i,:);
-           etaSort(k,:)= sort(abs(etaTheta(k,:)),2,'descend');
-           k
-           [etaSort(k,1)/etaSort(k,2)]
-           ratio{k,1}=[etaSort(k,1)/etaSort(k,2)];
-           strcat('link:',num2str(j),num2str(i));
-           ratio{k,2}=strcat('link: ',num2str(j),' , ',num2str(i));
-       end        
-   end
-end
-k=0;
-size(etaTheta,1);
-for i=1:size(etaTheta,1)
-    for j=1:n
-        k=k+1;
-        data(k,:)= [i,etaTheta(i,j)];
-    end
-end
 
 
 

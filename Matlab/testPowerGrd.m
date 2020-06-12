@@ -1,6 +1,6 @@
 %ode solver for power grid
 
-K=140;
+K=1;
 
 [t,y] = ode45(@ThetaOnly,[0,20],[0 0 0 0 0 0 0 0 0 0 0 0]);
 power= zeros(size(y,1),6);

@@ -7,7 +7,7 @@ clear; clc; close all;
 
 
 % Dimension of the system 
-n =100;
+n =1000;
 
 % Create a (random) matrix 
 A =  full(BAgraph(n));
@@ -24,25 +24,17 @@ gamma = 0.9;
 P = rand(n,1);
 P = P -mean(P);
 
+%Set time steps;
+Time = 0:.0018:10;
+
 % Perform diagonalization
-[V,Lambda] = eig(L);
 
-% Define the linear, second order, dynamics
-%
-% [ dx/dt ] = [  O     I    ] [ x ]
-% [ dv/dt ] = [ -L -gamma*I ] [ v ]
-%
-linear_dynamics = @(t,x) [zeros(n), eye(n); -L, -gamma*eye(n)] * x + [zeros(n,1); P];
-
-% Random initial conditions
-x0 = zeros(2*n,1);
-
-% Run ode45 
-[T,X] = ode45(linear_dynamics, [0,10], x0);
+val=LDwFailure(A,gamma,P,n,Time,1);
 
 % Make some plots
 figure(1)
-
+T=val{8,1};
+X=val{7,1};
 subplot(2,1,1)
 plot(T,X(:,1:n))
 xlabel('Time')
@@ -59,8 +51,16 @@ ylabel('Velocities')
 %  To diagonalize, pre-multiply by [ inv(V)   O_n   ]
 %                                  [  O_n    inv(V) ]
 %
-Q = V \ P;
-diagonalized_dynamics = @(t,x) [zeros(n), eye(n); -Lambda, -gamma*eye(n)] * x + [zeros(n,1); Q];
+valDD=DDwFailure(A,gamma,P,n,Time,1);
+valDD{1,1}
+
+A=valDD{1,1}
+V=valDD{2,1}
+Lambda=valDD{3,1}
+Q=valDD{4,1}
+
+Y=valDD{10,1};
+T=valDD{11,1};
 
 [Line1, Coeff1]=findLines(A,V); %to find flow coefficients and labels
 Line=Line1' % Transpose to plug into error approximation function
@@ -89,9 +89,7 @@ for i= 1:l
 end
 
     
-% Run ode45 for diagonalized dynamics
-y0 = [V, zeros(n); zeros(n), V] \ x0;
-[T, Y] = ode45(diagonalized_dynamics, T, y0);
+
 
 figure(2)
 subplot(2,1,1);

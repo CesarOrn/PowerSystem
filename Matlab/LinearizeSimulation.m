@@ -10,8 +10,8 @@ KOUPLING=140;
 coupling(1,2)=KOUPLING;
 coupling(2,1)=KOUPLING;
 
-coupling(1,3)=KOUPLING;
-coupling(3,1)=KOUPLING;
+coupling(1,3)=0;
+coupling(3,1)=0;
 
 coupling(1,5)=KOUPLING;
 coupling(5,1)=KOUPLING;
@@ -42,7 +42,6 @@ L=laplacian(coupling);
 %calcualte eigenvalues and eigenvector Matrix
 [V,eig]=eig(L);
 
-invers= inv(V);
 Q= V\power;
 damping=0.9;
 
@@ -83,13 +82,12 @@ saveFigs('Theta','Theta',t,theta,[0 20 -0.2 0.25],5,n)
 
 %Define an edge in software with names.
 edge =["theta 2 - theta 1" "theta 3 - theta 1" "theta 5 - theta 1" "theta 3 - theta 4" "theta 5 - theta 4" "theta 5 - theta 6"];
-
-lines(:,1)= sin(theta(:,1)-theta(:,2));
-lines(:,2)= sin(theta(:,1)-theta(:,3));
-lines(:,3)= sin(theta(:,1)-theta(:,5));
-lines(:,4)= sin(theta(:,4)-theta(:,3));
-lines(:,5)= sin(theta(:,4)-theta(:,5));
-lines(:,6)= sin(theta(:,5)-theta(:,6));
+lines(:,1)= (theta(:,1)-theta(:,2));
+lines(:,2)= (theta(:,1)-theta(:,3));
+lines(:,3)= (theta(:,1)-theta(:,5));
+lines(:,4)= (theta(:,4)-theta(:,3));
+lines(:,5)= (theta(:,4)-theta(:,5));
+lines(:,6)= (theta(:,5)-theta(:,6));
 size(lines,2)
 
 % plot each Theta_j-Theta_j individualy and save as png.
@@ -98,7 +96,7 @@ saveFigs('Theta',edge,t,lines,[0 20 -0.15 0.3],6,size(lines,2));
 
 
 function saveFigs(Ylabel,Name,t,data,AX,numfig,numofplots)
-
+type ='.fig'
 % list of all colors
 colors=get(gca,'colororder');
 
@@ -108,15 +106,16 @@ colors=get(gca,'colororder');
         if (isstring(Name))
             name=Name(i);
             titleName=strcat(name,' Plot');
-            name =strcat(name,'.png');
+            name =strcat(name,type);
         else
             name=Name;
             titleName= strcat(name,num2str(i),' Plot');
-            name =strcat(name,num2str(i),'.png');
+            name =strcat(name,num2str(i),type);
         end
         fig=figure(numfig);     
 
         %plot the theta and configure plot
+        i
         plot(t,data(:,i),'LineWidth',1.25,'Color',colors(mod(i,size(colors,1)),:));
         axis(AX)
         xlabel('Time(s)') ;
@@ -137,10 +136,10 @@ colors=get(gca,'colororder');
     if isstring(Name)
         name ='theta_j-theta_i';
         title(name);
-        name =strcat(name,'.png')
+        name =strcat(name,type)
     else
          
-         name =strcat(Name,'.png');
+         name =strcat(Name,type);
          title(Name);
     end
     saveas(fig,name);

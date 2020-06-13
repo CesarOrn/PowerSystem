@@ -7,7 +7,7 @@ clear; clc; close all;
 
 
 % Dimension of the system 
-n =100;
+n =6;
 
 % Create a (random) matrix 
 A =  full(BAgraph(n));
@@ -51,15 +51,31 @@ ylabel('Velocities')
 %  To diagonalize, pre-multiply by [ inv(V)   O_n   ]
 %                                  [  O_n    inv(V) ]
 %
-valDD=DDwFailure(A,gamma,P,Time,1);
+Coff={};
+
+valDD=DDwFailure(A,gamma,P,Time,100);
 
 A=valDD{1,1};
 V=valDD{2,1};
 Lambda=valDD{3,1};
 Q=valDD{4,1};
 
-Y=valDD{10,1};
-T=valDD{11,1};
+[Line1, Coeff1]=findLines(A,V);
+Coff{1,1}=Line1
+Coff{2,1}=Coeff1;
+
+for i=1:size(valDD,2)
+    AF=valDD{6,i};
+    VF=valDD{7,i};
+    [Line1, Coeff1]=findLines(AF,VF);
+    Coff{1,i+1}=Line1;
+    Coff{2,i+1}=Coeff1;
+    LambdaF=valDD{8,1};
+    QF=valDD{9,1};
+end
+
+Y=valDD{11,1};
+T=valDD{12,1};
 
 [Line1, Coeff1]=findLines(A,V); %to find flow coefficients and labels
 Line=Line1' ;% Transpose to plug into error approximation function

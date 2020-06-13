@@ -2,7 +2,7 @@
 %gamma:
 %power:
 %Time set time to calculate ODE.
-%numLines: number of lines of line failures.
+%numLines: number of lined failures to look at.
 
 %val: cell containing data
 %k are the diffrent simulation
@@ -21,6 +21,8 @@
         
 %val{11,k}=Values of all simulation;
 %val{12,k}=Time Values.
+
+%val{13,k}=Line Failed.
 
 function [val]=DDwFailure(coupling,gamma,power,Time,numLines)
 
@@ -45,7 +47,7 @@ diagonalized_dynamics = @(t,x) [zeros(n), eye(n); -Lambda, -gamma*eye(n)] * x + 
 x0 = zeros(2*n,1);
 [T, X] = ode45(diagonalized_dynamics,Time, x0);
 
-val = {}
+val = {};
 
     k=0;
     dataSize=size(coupling,1);
@@ -97,6 +99,7 @@ val = {}
         
                 val{11,k}=X3;
                 val{12,k}=T3;
+                val{13,k}=strcat('Line',num2str(j),', ',num2str(i));
                 if(k>=numLines)
                     return; 
                 end

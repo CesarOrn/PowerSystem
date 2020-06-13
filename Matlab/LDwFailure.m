@@ -2,7 +2,7 @@
 %gamma:
 %power:
 %Time set time to calculate ODE.
-%numLines: number of lines of line failures.
+%numLines: number of lined failures to look at.
 
 %val: cell containing data
 %k are the diffrent simulation
@@ -17,6 +17,8 @@
 
 %val{7,k}=All data of velocities and position
 %val{8,k}=Time for whole simulation
+
+%val{9,k}=Line Failed.
 
 
 function [val]= LDwFailure(coupling,gamma,power,Time,numLines)
@@ -40,7 +42,7 @@ x0 = zeros(2*n,1);
 
 % Run ode45 
 [T,X] = ode45(linear_dynamics, Time ,x0);
-val = {}
+val = {};
 
 
     k=0;
@@ -51,15 +53,20 @@ val = {}
         upper=dataSize-i;
         for j = dataSize-upper:dataSize
             if(coupling(i,j)~=0)
+            % fail a line once we have founda line to fail.
             couplingFail= coupling;
             couplingFail(i,j)=0;
             couplingFail(j,i)=0;
-        
+        %val{13,k}=Line Failed.
             % Create the Laplacian new
             LF = diag(sum(couplingFail,2)) - couplingFail;
+            
+            % start simulaiton  with initial condition before line cut.
             Init =X(size(X,1),:);
             linear_dynamics = @(t,x) [zeros(n), eye(n); -LF, -gamma*eye(n)] * x + [zeros(n,1); power];
             [T2,X2] = ode45(linear_dynamics, Time, Init);
+            
+            %append new simulation data.
             X3 = [X;X2];
             T3 = [T;T2+T(size(T,1),1)];
             
@@ -73,6 +80,8 @@ val = {}
             val{6,k} =X2(size(X2,1),:);
             val{7,k}=X3;
             val{8,k}=T3;
+            
+            val{9,k}=strcat('Line',num2str(j),', ',num2str(i));
             
             if(k>=numLines)
                return; 

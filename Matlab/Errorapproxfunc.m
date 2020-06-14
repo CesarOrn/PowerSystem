@@ -8,25 +8,18 @@ m=dim(1,2);
 
                 %           STEADY STATE
 %Multiply coefficient to steady State value
+Linsm=Coeff.*SS;
 
-
-Linsm=zeros([n,m]);
-for j=1:m
-    Linsm(:,j)=Coeff(:,j).*SS;
-end
 
 % Sum each of the columns to attain summation value
+SSsum =sum(Linsm) ;
 
-SSsum=zeros([1,m]);
-for i = 1:m
-    SSsum(1,i)=sum(Linsm(:,i));
-end
-    
 %For dominant eta, take just the coefficient of eta multiplied by the
 %steady state
 SSerror=10;
-l=1;
+l=0;
 while max(SSerror)>5   
+    l=l+1;
    Sdom=zeros([1,m]);
    
    [~,idx]=sort(abs(SS), 'Descend');    
@@ -44,8 +37,9 @@ while max(SSerror)>5
     
     SSerror= abs(((SSsum-Sdom)./SSsum).*100);%Steady state error
     SSerror2(:,l)=SSerror;
-    l=l+1;  
+      
 end
-l=l-1;
+
+end
 
 

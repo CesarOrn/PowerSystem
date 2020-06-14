@@ -7,9 +7,10 @@ clear; clc; close all;
 
 
 % Dimension of the system 
-n =6;
+n =10;
 
 % Create a (random) matrix 
+LK=getNetwork('network1')
 A =  full(BAgraph(n));
 %A = A-diag(diag(A));
 %A= A+transpose(A);
@@ -25,7 +26,7 @@ P = rand(n,1);
 P = P -mean(P);
 
 %Set time steps;
-Time = 0:.0018:10;
+Time = 0:.0018:20;
 
 % Perform diagonalization
 
@@ -51,59 +52,72 @@ ylabel('Velocities')
 %  To diagonalize, pre-multiply by [ inv(V)   O_n   ]
 %                                  [  O_n    inv(V) ]
 %
-Coff={};
+
 
 valDD=DDwFailure(A,gamma,P,Time,100);
 
-A=valDD{1,1};
-V=valDD{2,1};
+Coff={};
+fprintf('error');
+AB=valDD{1,1};
+VB=valDD{2,1};
+[BFLine1, BFCoeff1]=findLines(AB,VB);
+Coff{1,1}=BFLine1';
+Coeff=BFCoeff1';
+Coff{2,1}=BFCoeff1';
+       
 Lambda=valDD{3,1};
 Q=valDD{4,1};
+    
+trans=transientResponse(Lambda,Q);
+BFOmega=trans{2,1};
+Coff{3,1}=trans{4,1};
+Coff{4,1}=trans{5,1};
+SS=trans{4,1};
+Coff{5,1}=trans{6,1};
 
-[Line1, Coeff1]=findLines(A,V);
-Coff{1,1}=Line1
-Coff{2,1}=Coeff1;
+BFtrans=cell2mat({trans{4,1},trans{5,1},trans{6,1}});
+    
+[SSerror,SSerror2,l]=Errorapproxfunc(size(Coeff),Coeff,SS) ;% error approx
 
+BFMaxerror=max(SSerror2);
+Coff{6,1}= BFMaxerror;
+    
 for i=1:size(valDD,2)
-    AF=valDD{6,i};
+    A=valDD{6,i};
     VF=valDD{7,i};
-    [Line1, Coeff1]=findLines(AF,VF);
-    Coff{1,i+1}=Line1;
-    Coff{2,i+1}=Coeff1;
-    LambdaF=valDD{8,1};
-    QF=valDD{9,1};
+    [Line1, Coeff1]=findLines(A,VF);
+    Coff{1,i+1}=Line1';
+    Coeff=Coeff1';
+    Coff{2,i+1}=Coeff1';
+    
+    
+    Lambda=valDD{8,i};
+    Q=valDD{9,i};
+    
+    trans=transientResponse(Lambda,Q);
+    Omega=trans{2,1};
+    Coff{3,i+1}=trans{4,1};
+    Coff{4,i+1}=trans{5,1};
+    SS=trans{4,1};
+    Coff{5,i+1}=trans{6,1};
+    trans=cell2mat({trans{4,1},trans{5,1},trans{6,1}});
+    
+    [SSerror,SSerror2,l]=Errorapproxfunc(size(Coeff),Coeff,SS) ;% error approx
+
+    Maxerror=max(SSerror2);
+    Coff{6,i+1}= Maxerror;
+    name= strcat('myData',num2str(i),'.xlsx');
+    exportTable(VB,BFtrans ,BFLine1,BFCoeff1,BFMaxerror,BFOmega,VF,trans ,Line1,Coeff1,Maxerror,Omega,valDD{13,i},name);
 end
+
+
 
 Y=valDD{11,1};
 T=valDD{12,1};
 
-[Line1, Coeff1]=findLines(A,V); %to find flow coefficients and labels
-Line=Line1' ;% Transpose to plug into error approximation function
-Coeff=Coeff1';
-Q1=Q(2:n); % Removing the zero in the first positons so that we don't get infinity in the later calculations
-Lambda1=zeros([n-1,1]);
-for i=1:n-1
-    Lambda1(i,1)=Lambda(i+1,i+1);
-end
-
-omega=sqrt(Lambda1);
-
-zeta=1./(2.*omega);
-SS1= Q1./Lambda1;
-SS=[0;SS1];  % Steady state
-pt1=pi./(omega.*sqrt(1-zeta.^2));
-pt=[0;pt1]; % Peak time
-peak1=Q1./Lambda1.*(1+exp(-pi.*zeta./sqrt(1-zeta.^2)));
-peak=[0;peak1]; % Peak
-
-
  
-[SSerror,SSerror2,l]=Errorapproxfunc(size(Coeff),Coeff,SS) ;% error approx
-for i= 1:l
-    Maxerror(:,i)=max(SSerror2(:,i)); %matrix of max errors of each flow
-end
 
-    
+fprintf('plotting');
 
 
 figure(2)
@@ -117,7 +131,7 @@ plot(T,Y(:,1+n:2*n))
 xlabel('Time');
 ylabel('Diagonalized Velocities');
 
-
+V=VB;
 
 %
 % Demonstrate that we can map Y back to X, xmapped = V*Y
@@ -179,6 +193,7 @@ xlabel('Line');
 ylabel('Eta coefficient (Theta_j-Theat_i)');    
 
 figure(5);
+l
 plot(SSerror2,1:l)
 title('Error spread over number of dominant etas used')
 xlabel('error percentage');
@@ -186,6 +201,7 @@ ylabel('number of dominant etas used');
 
 
 figure(6);
+l
 bar(1:l,Maxerror)
 title('Max error VS number of dominant etas used');
 xlabel('number of dominant etas used')

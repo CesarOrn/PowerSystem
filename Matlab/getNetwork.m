@@ -1,4 +1,4 @@
-function [A]=getNetwork(name)
+function [A,P]=getNetwork(name)
 %name: Selecte network to get.
 %option:
     %network1
@@ -7,6 +7,14 @@ function [A]=getNetwork(name)
 
 %A: return coupling matrix.
 KOUPLING=140;
+P=zeros(6,1);
+        
+P=(1,1)=  40;
+P=(2,1)= -20;
+P=(3,1)= -25;
+P=(4,1)=  40;
+P=(5,1)= -25;
+P=(6,1)= -10;
 
     if(name=='network1')
         A=zeros(6);
@@ -30,6 +38,7 @@ KOUPLING=140;
 
         A(6,5)=KOUPLING;
         A(5,6)=KOUPLING;
+       
         return ;
     end
     

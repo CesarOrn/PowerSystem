@@ -10,7 +10,7 @@ clear; clc; close all;
 n =6;
 
 % get network and power
-[A, P] =  getNetwork('network1');
+[A, P] =  getNetwork('network2');
 %A = A-diag(diag(A));
 %A= A+transpose(A);
 
@@ -28,23 +28,41 @@ Time = 0:.0018:10;
 
 % Perform diagonalization
 
-val=LDwFailure(A,gamma,P,Time,1);
+[val,numLines]=LDwFailure(A,gamma,P,Time);
 
 % Make some plots
-figure(1)
-T=val{8,1};
-X=val{7,1};
-subplot(2,1,1)
-plot(T,X(:,1:n))
+
+for z=1:numLines
+coupling=val{4,z};
+T=val{8,z};
+X=val{7,z};
+  
+    dataSize=size(coupling,1);
+    % looks a upper triangule of the matrix. If A(i,j) is not equal to 0. We have
+    % a connection to j,i.
+    q=1;
+    for i = 1:dataSize
+        upper=dataSize-i; 
+        for j = dataSize-upper:dataSize
+            if(coupling(i,j)~=0)
+                X1=X(:,j)-X(:,i);
+                X3=X1(length(Time):2*length(Time));
+                [~, ind]=sort(abs(X3),'descend');
+                Xmax=X3(ind);
+                Maxflow(:,q)=Xmax(1);
+                X2(:,q)=X1;
+                q=q+1;
+            end
+        end       
+    end
+
+Maxflowarray{1,z}=Maxflow;
+figure(z)
+plot(T,X2(:,1:n))
 xlabel('Time')
 ylabel('Positions')
 title('Coupled Dynamics');
-
-subplot(2,1,2)
-plot(T,X(:,n+1:2*n))
-xlabel('Time')
-ylabel('Velocities')
-
+end
 % Run the diagonalized dynamics
 %
 %  To diagonalize, pre-multiply by [ inv(V)   O_n   ]
@@ -118,15 +136,15 @@ end
 for i =1:m
 Ind=valDD{13,i} %Index of lines
 A=valDD{6,i} % Coupling matrix
-V=valDD{7,i}; %Eigen vectors
-Lambda=valDD{8,i}; %Eigen values
-Q=valDD{9,i}; %new Q values
+V=valDD{7,i} %Eigen vectors
+Lambda=valDD{8,i} %Eigen values
+Q=valDD{9,i} %new Q values
 Y=valDD{11,i};
 T=valDD{12,i};
 Q1=Q(2:n); % Removing the zero in the first positons so that we don't get infinity in the later calculations
 
 
-figure(i+1)
+figure(i+numLines)
 subplot(2,1,1);
 plot(T,Y(:,1:n));
 xlabel('Time');
@@ -206,12 +224,17 @@ end
 
    
     %turn array to matrix to write file
-for i =1:length(SSsum2);
+for i =1:length(SSsum2)
     SSmat(i,1:m)=SSsum2{1,i};
+end
+
+for i =1:length(Maxflowarray)
+    Maxmat(i,1:m)=Maxflowarray{1,i};
 end
 
 writematrix(Coeffmat,'Coeff.xlsx')
 writematrix(SSmat, 'SSsum.xlsx')
+writematrix(Maxmat,'Maxflow.xlsx')
 
 
 

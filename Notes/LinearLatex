@@ -1,0 +1,754 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{bm}
+\usepackage{graphicx}
+\usepackage{subfig}
+\usepackage{pst-all}
+\usepackage[export]{adjustbox}
+\usepackage{multicol}
+\usepackage{multirow}
+\usepackage[export]{adjustbox}
+\usepackage{float}
+\usepackage{pgf}
+
+\title{Diagonalizing the Linear Swing Equations}
+
+
+\begin{document}
+
+\maketitle
+
+We consider the linear equations,
+\begin{equation}
+    \ddot{{\theta}}_i(t) = -\gamma \dot{\bm{\theta}}_i(t) + \sum_j A_{ij} ({\theta}_j -\theta_i(t)) + {P_i},
+\end{equation}
+$i=1,...,N$, $\gamma>0$, $\sum_i P_i=0$.
+%
+We consider the vector ${\bm{\theta}}=[\theta_1,\theta_2,...\theta_N]$ and the vector ${\bm{P}}=[P_1,P_2,...P_N]$ and rewrite,
+%
+\begin{equation}
+    \ddot{\bm{\theta}}(t) = -\gamma \dot{\bm{\theta}}(t) - L \bm{\theta}(t) + \bm{P},
+\end{equation}
+where the Laplacian matrix $L=\{L_{ij}\}$, each entry $L_{ij}=-A_{ij} +\delta_{ij} \sum_j A_{ij}$ and $\delta_{ij}$ is the Kronecker delta. The Laplacian matrix $L$ has the property that all of its rows sum to zero, which ensures it has one zero eigenvalue $\lambda_1=0$ with associated eigenvector $[1,1,...,1]$ and the remaining eigenvalues $\lambda_2 \leq \lambda_3 \leq ....\lambda_N$ are all positive.Now we diagonalize $L$, $L=V \Lambda V^{-1}$, where $\Lambda=(\lambda_1,\lambda_2,...,\lambda_N)$ is the matrix of the eigenvalues of $L$ and $V=\{V_{ij}\}$ is the matrix of the eigenvectors of $L$.
+%
+We multiply Eq.\ (2) on the left by $V^{-1}$ and by calling $\bm{\eta}(t)=V^{-1} \bm{\theta}(t)$, and $\bm{Q}=V^{-1} \bm{P}$ we obtain,
+%
+\begin{equation}
+    \ddot{{\bm{\eta}}}(t) = -\gamma \dot{{\bm{\eta}}}(t) - \Lambda {\bm{\eta}}(t) + {\bm{Q}},
+\end{equation}
+%
+which can be broken up in $N$ independent equations,
+\begin{equation} \label{gen}
+    \ddot{{{\eta}}}_i(t) = -\gamma \dot{{{\eta}}}_i(t) - \lambda_i {{\eta}_i}(t) + {{Q}_i},
+\end{equation}
+$i=1,...,N$. For $i=1$, we obtain,
+\begin{equation}
+    \ddot{{{\eta}}}_1(t) + \gamma \dot{{{\eta}}}_1(t)  = 0,
+\end{equation}
+indicating that $\eta_1(t)$ approaches a constant for large $t$.
+For $i>1$, Eq. \eqref{gen} is the equation of an underdamped ($0 < \zeta_i <1 $, $i=2,...,M$) or overdamped ($\zeta_i>1$, $i=M+1,...,N$) second order system forced by a step function of amplitude $Q_i$.  Overdamped systems don't give rise to overshoots, and so in what follows, we are going to neglect the indices $i>M$. For underdamped systems, we can write
+\begin{equation}\label{UD}
+    \ddot{{{\eta}_i}}(t) + 2 \zeta_i \omega_i \dot{{{\eta}_i}}(t) + {\omega_i}^2 {{\eta}_i}(t) = {{Q}_i},
+\end{equation}
+where  $\lambda_i=\omega_i^2$ and $\zeta_i={\gamma}/{(2 \omega_i)}$, $i=2,...,M$.
+The solution to \eqref{UD} can be written as $\eta_i(t)=\bar{\eta}_i(t)+\tilde{\eta}_i(t)$, where $\bar{\eta}_i(t)$ is the free evolution and $\tilde{\eta}_i(t)$ is the forced evolution. The free evolution decays exponentially in time. Thus we can assume $\eta_i(t) \simeq \tilde{\eta}_i(t)$ and we can write:
+
+\begin{equation}
+    {\eta}_i(t)=\frac{Q_i}{\omega_i^2}\Bigl[1 - \frac{e^{-\zeta_i \omega_i t}}{\sqrt{1-\zeta_i^2}} \sin \Bigl(\omega_i \sqrt{1-\zeta_i^2 t} -\cos^{-1} \zeta_i \Bigr) \Bigr],
+\end{equation}
+which converges at steady state to
+\begin{equation}
+    {\eta}_i^{ss}=\frac{Q_i}{\omega_i^2}
+\end{equation}
+and for which the peak time can be computed
+\begin{equation}
+    t_i=\frac{\pi}{\omega_i \sqrt{1-\zeta_i^2}}
+\end{equation}
+and the peak
+\begin{equation}
+    {\eta}_i^{\mbox{peak}}=\frac{Q_i}{\omega_i^2}\Bigl[1 + \exp({-\pi \zeta_i}/{\sqrt{1-\zeta_i^2}}) \Bigr].
+\end{equation}
+ The larger is $Q_i$ the higher is the peak.  The smaller is $\omega_i^2=\lambda_i$ the higher is the peak. Finally, the smaller is $\zeta_i$, the higher is the peak. The eigenvalue $\lambda_2$ is associated with the smallest $\omega_2$ and also the smallest $\zeta_2$ and so is generically responsible for the largest peak.
+
+ \emph{Question: what if the $\lambda_i$ are complex (case of asymmetric Laplacian)?}
+
+As we know each one of the $\eta_i(t)$, we can also compute each one of the $\theta_i(t)$, using the formula $\bm{\theta}(t)=V \bm{\eta}(t)$, or equivalently,
+\begin{equation}
+    \theta_i(t)= \sum_j V_{ij} \eta_j(t),
+\end{equation}
+and it is important to note that the $V_{ij}$ can be either positive or negative, and so are the $Q_i$.
+
+Generically, the peak of $\theta_i(t)$ will be more strongly affected by $\eta_2(t)$, and then by $\eta_3(t)$, $\eta_4(t)$, etc., but it will also depend on the terms $ V_{ij} Q_j$.
+
+We can also compute the values of $\theta_i$ at steady state,
+\begin{equation}
+    \theta_i^{ss}= \sum_j V_{ij} \eta_j^{ss} = \sum_j V_{ij} \frac{Q_j}{\omega_j^2}
+\end{equation}
+
+\section{Example}
+\begin{center}
+\begin{tabular}{p{10cm}p{10cm}}
+    \includegraphics[width=10cm, height=10cm,left]{Setup1.png}
+
+
+$L$= $\begin{bmatrix}
+420 & -140 & -140 & 0 & -140 & -140\\
+-140 & 140 & 0 & 0 & 0 & 0\\
+-140 & 0 & 280 & -140 & 0 & 0\\
+0 & 0 & -140 & 280 & -140 & 0\\
+-140 & 0 & 0 & -140 & 420 & -140\\
+0 & 0 & 0 & 0 & -140 & 140
+\end{bmatrix}$\\
+\end{tabular}
+\end{center}
+
+\begin{center}
+Laplacian Matrix.
+\end{center}
+
+
+
+\begin{center}
+\begin{tabular}{c c}
+V= $\begin{bmatrix}
+-0.408 & -0.227 &  0.0 &  0.290 &  0.577 & -0.603\\
+-0.408 & -0.662 &  0.5 & -0.190 & -0.289 &  0.158\\
+-0.408 & -0.097 & -0.5 &  0.616 & -0.289 &  0.332\\
+-0.408 &  0.097 & -0.5 & -0.616 & -0.289 & -0.332\\
+-0.408 &  0.227 &  0.0 & -0.290 &  0.577 &  0.603\\
+-0.408 &  0.662 &  0.5 &  0.190 & -0.289 & -0.158
+\end{bmatrix}$&
+
+
+$\lambda= $$\begin{bmatrix}
+ 0\\
+ 91.99\\
+ 140.00\\
+ 354.10\\
+ 420.00\\
+ 637.90
+\end{bmatrix}$\\
+
+
+Eigenvectors &  EigenValues\\
+
+
+\end{tabular}
+\end{center}
+
+\clearpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+--\section{Example: Network Configuration 1}
+{% First network
+
+
+\newcommand{\factor}{2.5in}
+\newcommand{\path}{AllSetup/Setup1}
+
+
+
+
+We will be look at number of networks with different edge being cut. The first network we will look is the network without a edge being removed.
+\begin{figure}[H]
+\includegraphics[width=\factor,center]{\path/Setup1.png}
+\caption{Network configuration 1.}
+\end{figure}
+
+Now we look at the $\eta$'s. First we look at the EigenVector (V). Second, we will look at the Eigenvalue($\lambda$),damping coefficient($\gamma$), and Q. Lastly, we look at the damping ratio ($\zeta$), frequency($\omega$)  Peak, Peak time  and  the steady state value of $\eta_1, \eta_2 ... \eta_n$
+
+\begin{table}[H]
+\begin{tabular}{|l|l|l|l|l|l|}
+\hline
+& & EigenVector(V) & & & \\ \hline
+-0.408 & -0.227  & 0.000  & 0.290  & 0.577  & -0.604  \\ \hline
+-0.408 & -0.663  & 0.500  & -0.190 & -0.289 & 0.158 \\ \hline
+-0.408 & -0.097 & -0.500  & 0.616 & -0.289  &  0.333 \\ \hline
+-0.408 & -0.097 & -0.500  & -0.616  & -0.289 & -0.333  \\ \hline
+-0.408 &  0.227  & 0.000 & -0.290  & 0.577  & 0.604 \\ \hline
+-0.408 &  0.663  & -0.500 &  0.109 & -0.289  & -0.158  \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\begin{tabular}{|l|l|l|l|}
+\hline
+ &  Eigenvalue($\lambda$)    &  Gamma($\gamma$) &  Q      \\ \hline
+ $\eta_1$&  0.00    &  0.90 &  0.00      \\ \hline
+ $\eta_2$&  91.991  &  0.90 &  -1.839    \\ \hline
+ $\eta_3$&  140.000 &  0.90 &  -22.500   \\ \hline
+ $\eta_4$&  354.104 &  0.90 &  -19.308   \\ \hline
+ $\eta_5$&  420.000 &  0.90 &   12.990   \\ \hline
+ $\eta_6$&  673.905 &  0.90 &  -62.440   \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\begin{tabular} {|l|l|l|l|l|l|}
+\hline
+ &  Natural Frequency($\omega$)    &  Damping Ratio($\zeta$) & Peak Time & Peak & Steady State      \\ \hline
+ $\eta_1$&  N/A    &  N/A    &  N/A   & N/A    &  N/A      \\ \hline
+ $\eta_2$&  9.591  &  0.047 &  0.328  & -0.037    & -0.020 \\ \hline
+ $\eta_3$&  11.832 &  0.038 &  0.266  & -0.303    & -0.161 \\ \hline
+ $\eta_4$&  18.818 &  0.024 &  0.167  & -0.105    & -0.055 \\ \hline
+ $\eta_5$&  20.494 &  0.022 &  0.153  &  0.060    &  0.031 \\ \hline
+ $\eta_6$&  25.960 &  0.017 &  0.121  & -0.180    & -0.093 \\ \hline
+\end{tabular}
+\end{table}
+
+
+
+\begin{figure}[H]
+
+\begin{tabular}{cc}
+{\includegraphics[width=\factor]{\path/Eta/Eta1.png}} &
+{\includegraphics[width=\factor]{\path/Eta/Eta2.png}} \\
+{\includegraphics[width=\factor]{\path/Eta/Eta3.png}}&
+{\includegraphics[width=\factor]{\path/Eta/Eta4.png}}\\
+{\includegraphics[width=\factor]{\path/Eta/Eta5.png}} &
+{\includegraphics[width=\factor]{\path/Eta/Eta6.png}} \\
+%{\includegraphics[width=\factor]{\path/Eta/Eta.png}}
+\end{tabular}
+\caption{Eta plots network configuration 1.}
+\end{figure}
+\vspace*{\fill}
+
+We look at the individual Thetas.
+\noindent
+\begin{figure}[H]
+\begin{tabular}{cc}
+{\includegraphics[width=\factor]{\path/Theta/Theta1.png}} &
+{\includegraphics[width=\factor]{\path/Theta/Theta2.png}} \\
+{\includegraphics[width=\factor]{\path/Theta/Theta3.png}}&
+{\includegraphics[width=\factor]{\path/Theta/Theta4.png}}\\
+{\includegraphics[width=\factor]{\path/Theta/Theta5.png}} &
+{\includegraphics[width=\factor]{\path/Theta/Theta6.png}} \\
+%{\includegraphics[width=\factor]{\path/Theta/Theta.png}}
+\end{tabular}
+\caption{Theta plots network configuration 1.}
+\end{figure}
+
+Finally for this network, We look at the flow of each of lines. In addition, we look at a table that hold the constant of the  $\eta_1, \eta_2 ..\eta_n$ when looking at $\theta_j - \theta_i$.
+
+\begin{table}[H]
+\begin{tabular} {|l|l|l|l|l|l|l|}
+\hline
+ &  $\theta_2-\theta_1$    & $\theta_3-\theta_1$  & $\theta_5-\theta_1$  & $\theta_3-\theta_4$  & $\theta_5-\theta_4$ & $\theta_6-\theta_5$        \\ \hline
+ $\eta_1$&  0.000  &  0.000 &  0.000  &  0.000    &  0.000  &   0.000 \\ \hline
+ $\eta_2$& -0.436  &  0.130 &  0.454  & -0.194    & -0.130  &   0.436 \\ \hline
+ $\eta_3$&  -0.500 & -0.500 &  0.000  &  0.000    & 0.500   &   0.500 \\ \hline
+ $\eta_4$&  -0.480 &  0.326 & -0.580  &  1.232    & 0.326   &   0.480 \\ \hline
+ $\eta_5$&  -0.866 &  -0.866&  0.000  &  0.000    & 0.866   &  -0.866 \\ \hline
+ $\eta_6$&  -0.762 &  0.937 &  1.208  &  0.666    & 0.937   &  -0.762 \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+\begin{tabular}{cc}
+{\includegraphics[width=\factor]{\path/ThetaSub/theta 2 - theta 1.png}} &
+{\includegraphics[width=\factor]{\path/ThetaSub/theta 3 - theta 1.png}} \\
+{\includegraphics[width=\factor]{\path/ThetaSub/theta 5 - theta 1.png}}&
+{\includegraphics[width=\factor]{\path/ThetaSub/theta 3 - theta 4.png}}\\
+{\includegraphics[width=\factor]{\path/ThetaSub/theta 5 - theta 4.png}} &
+{\includegraphics[width=\factor]{\path/ThetaSub/theta 5 - theta 6.png}} \\
+%{\includegraphics[width=\factor]{\path/Theta/Theta.png}}
+\end{tabular}
+\caption{j,i plots network configuration 1.}
+\end{figure}
+
+}
+
+
+\clearpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Example: Network Configuration 2}
+{% Second network
+
+
+\renewcommand{\factor}{2.5in}
+\renewcommand{\path}{AllSetup/Setup1_2}
+
+
+
+
+\begin{figure}[H]
+\includegraphics[width=\factor,center]{\path/Setup1.png}
+\caption{Network configuration 2.}
+\end{figure}
+
+
+
+\begin{table}[H]
+\begin{tabular}{|l|l|l|l|l|l|}
+\hline
+& & EigenVector(V) & & & \\ \hline
+-0.408 & 0.372  & 0.118  & 0.408  & 0.602  & 0.391  \\ \hline
+-0.408 & 0.602  & 0.390  & -0.408 & -0.372 & -0.118 \\ \hline
+-0.408 & -0.602 & 0.390  & -0.408 & 0.372  & -0.118 \\ \hline
+-0.408 & -0.372 & 0.118  & 0.408  & -0.372 & 0.391  \\ \hline
+-0.408 & 0.000  & -0.237 & 0.408  & 0.000  & -0.781 \\ \hline
+-0.408 & 0.000  & -0.781 & -0.408 & 0.000  & 0.237  \\ \hline
+\end{tabular}
+\end{table}
+
+
+\begin{table}[H]
+\begin{tabular}{|l|l|l|l|}
+\hline
+ &  Eigenvalue($\lambda$)    &  Gamma($\gamma$) &  Q      \\ \hline
+ $\eta_1$&  0.00    &  0.90 &  0.00      \\ \hline
+ $\eta_2$&  53.475  &  0.90 &  3.007    \\ \hline
+ $\eta_3$&  97.611 &  0.90 &  5.611   \\ \hline
+ $\eta_4$&  280.000 &  0.90 &  44.907   \\ \hline
+ $\eta_5$&  366.525 &  0.90 &   -1.859   \\ \hline
+ $\eta_6$&  602.389 &  0.90 &  53.753   \\ \hline
+\end{tabular}
+\end{table}
+
+
+
+
+\begin{table}[H]
+\begin{tabular} {|l|l|l|l|l|l|}
+\hline
+ &  Natural Frequency($\omega$)    &  Damping Ratio($\zeta$) & Peak Time & Peak & Steady State      \\ \hline
+ $\eta_1$&  N/A    &  N/A    &  N/A   & N/A    &  N/A      \\ \hline
+ $\eta_2$&  7.313  &  0.062 &  0.430  &  0.103    &  0.056 \\ \hline
+ $\eta_3$&  9.880  &  0.046 &  0.318  &  0.107    &  0.057 \\ \hline
+ $\eta_4$&  16.733 &  0.027 &  0.188  &  0.308    &  0.160\\ \hline
+ $\eta_5$&  19.145 &  0.024 &  0.164  & -0.010    & -0.005 \\ \hline
+ $\eta_6$&  24.544 &  0.018 &  0.128  &  0.173    &  0.089 \\ \hline
+\end{tabular}
+\end{table}
+
+
+
+\begin{figure}[H]
+\begin{tabular}{cc}
+{\includegraphics[width=\factor]{\path/Eta/Eta1.png}} &
+{\includegraphics[width=\factor]{\path/Eta/Eta2.png}} \\
+{\includegraphics[width=\factor]{\path/Eta/Eta3.png}}&
+{\includegraphics[width=\factor]{\path/Eta/Eta4.png}}\\
+{\includegraphics[width=\factor]{\path/Eta/Eta5.png}} &
+{\includegraphics[width=\factor]{\path/Eta/Eta6.png}} \\
+%{\includegraphics[width=\factor]{\path/Eta/Eta.png}}
+\end{tabular}
+\caption{Eta plots network configuration 2.}
+\end{figure}
+\vspace*{\fill}
+
+
+
+\begin{figure}[H]
+\begin{tabular}{cc}
+{\includegraphics[width=\factor]{\path/Theta/Theta1.png}} &
+{\includegraphics[width=\factor]{\path/Theta/Theta2.png}} \\
+{\includegraphics[width=\factor]{\path/Theta/Theta3.png}}&
+{\includegraphics[width=\factor]{\path/Theta/Theta4.png}}\\
+{\includegraphics[width=\factor]{\path/Theta/Theta5.png}} &
+{\includegraphics[width=\factor]{\path/Theta/Theta6.png}} \\
+%{\includegraphics[width=\factor]{\path/Theta/Theta.png}}
+\end{tabular}
+\caption{Theta plots network configuration 2.}
+\end{figure}
+
+
+
+\begin{table}[H]
+\begin{tabular} {|l|l|l|l|l|l|l|}
+\hline
+ &  $\theta_2-\theta_1$    & $\theta_3-\theta_1$  & $\theta_5-\theta_1$  & $\theta_3-\theta_4$  & $\theta_5-\theta_4$ & $\theta_6-\theta_5$        \\ \hline
+ $\eta_1$&  0.000 &  0.000 &  0.000  &  0.000    &  0.000   &   0.000 \\ \hline
+ $\eta_2$&  0.230 & -0.974 & -0.372  & -0.230    &  0.372   &   0.000 \\ \hline
+ $\eta_3$& -0.272 &  0.272 & -0.355  &  0.272    & -0.355   &  -0.544 \\ \hline
+ $\eta_4$& -0.816 & -0.816 &  0.000  & -0.816    &  0.000   &  -0.816 \\ \hline
+ $\eta_5$& -0.974 & -0.230 & -0.602  &  0.744    &  0.372   &   0.000 \\ \hline
+ $\eta_6$&  0.509 & -0.509 & -1.172  & -0.509    & -1.172   &   1.018\\ \hline
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+\begin{tabular}{cc}
+{\includegraphics[width=\factor]{\path/ThetaSub/theta 1 - theta 2.png}} &
+{\includegraphics[width=\factor]{\path/ThetaSub/theta 3 - theta 1.png}} \\
+{\includegraphics[width=\factor]{\path/ThetaSub/theta 5 - theta 1.png}}&
+{\includegraphics[width=\factor]{\path/ThetaSub/theta 4 - theta 3.png}}\\
+{\includegraphics[width=\factor]{\path/ThetaSub/theta 5 - theta 4.png}} &
+{\includegraphics[width=\factor]{\path/ThetaSub/theta 5 - theta 6.png}} \\
+%{\includegraphics[width=\factor]{\path/Theta/Theta.png}}
+\end{tabular}
+\caption{j,i plots network configuration 2.}
+\end{figure}
+
+}
+
+\clearpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Example: Network Configuration 3}
+{% Third network
+
+
+\renewcommand{\factor}{2.5in}
+\renewcommand{\path}{AllSetup/Setup1_3}
+
+
+
+
+\begin{figure}[H]
+\includegraphics[width=\factor,center]{\path/Setup1.png}
+\caption{Network configuration 3.}
+\end{figure}
+
+
+
+\begin{table}[H]
+\begin{tabular}{|l|l|l|l|l|l|}
+\hline
+& & EigenVector(V) & & & \\ \hline
+-0.408 &-0.261  & 0.000  & 0.000  & -0.577  & 0.657  \\ \hline
+-0.408 &-0.465  & 0.000  & -0.707 &  0.289  & -0.185 \\ \hline
+-0.408 &-0.465  & 0.000  &  0.707 &  0.289  & -0.185 \\ \hline
+-0.408 & 0.465  & -0.707 & 0.000  &  0.289  &  0.185  \\ \hline
+-0.408 & 0.261  &  0.000 & 0.000  & -0.577  & -0.657 \\ \hline
+-0.408 & 0.465  &  0.707 & 0.000  &  0.289  &  0.185  \\ \hline
+\end{tabular}
+\end{table}
+
+
+\begin{table}[H]
+\begin{tabular}{|l|l|l|l|}
+\hline
+ &  Eigenvalue($\lambda$)    &  Gamma($\gamma$) &  Q      \\ \hline
+ $\eta_1$&  0.00    &  0.90 &  0.00      \\ \hline
+ $\eta_2$&  61.383  &  0.90 &  17.891    \\ \hline
+ $\eta_3$&  140.000 &  0.90 &  -35.355   \\ \hline
+ $\eta_4$&  140.000 &  0.90 &  -3.536   \\ \hline
+ $\eta_5$&  420.000 &  0.90 &  -12.990   \\ \hline
+ $\eta_6$&  638.617 &  0.90 &  56.557  \\ \hline
+\end{tabular}
+\end{table}
+
+
+
+
+\begin{table}[H]
+\begin{tabular} {|l|l|l|l|l|l|}
+\hline
+ &  Natural Frequency($\omega$)    &  Damping Ratio($\zeta$) & Peak Time & Peak & Steady State      \\ \hline
+ $\eta_1$&  N/A    &  N/A    &  N/A   & N/A    &  N/A      \\ \hline
+ $\eta_2$&  7.835  &  0.057 &  0.402  &  0.535    &  0.291  \\ \hline
+ $\eta_3$&  11.832 &  0.038 &  0.266  & -0.477    &  -0.253 \\ \hline
+ $\eta_4$&  11.832 &  0.038 &  0.266  & -0.048    & -0.025 \\ \hline
+ $\eta_5$&  20.494 &  0.022 &  0.153  & -0.060    & -0.031 \\ \hline
+ $\eta_6$&  25.271 &  0.018 &  0.124  &  0.172    &  0.089 \\ \hline
+\end{tabular}
+\end{table}
+
+
+
+\begin{figure}[H]
+\begin{tabular}{cc}
+{\includegraphics[width=\factor]{\path/Eta/Eta1.png}} &
+{\includegraphics[width=\factor]{\path/Eta/Eta2.png}} \\
+{\includegraphics[width=\factor]{\path/Eta/Eta3.png}}&
+{\includegraphics[width=\factor]{\path/Eta/Eta4.png}}\\
+{\includegraphics[width=\factor]{\path/Eta/Eta5.png}} &
+{\includegraphics[width=\factor]{\path/Eta/Eta6.png}} \\
+%{\includegraphics[width=\factor]{\path/Eta/Eta.png}}
+\end{tabular}
+\caption{Eta plots network configuration 3.}
+\end{figure}
+\vspace*{\fill}
+
+
+
+\begin{figure}[H]
+\begin{tabular}{cc}
+{\includegraphics[width=\factor]{\path/Theta/Theta1.png}} &
+{\includegraphics[width=\factor]{\path/Theta/Theta2.png}} \\
+{\includegraphics[width=\factor]{\path/Theta/Theta3.png}}&
+{\includegraphics[width=\factor]{\path/Theta/Theta4.png}}\\
+{\includegraphics[width=\factor]{\path/Theta/Theta5.png}} &
+{\includegraphics[width=\factor]{\path/Theta/Theta6.png}} \\
+%{\includegraphics[width=\factor]{\path/Theta/Theta.png}}
+\end{tabular}
+\caption{Theta plots network configuration 3.}
+\end{figure}
+
+
+
+\begin{table}[H]
+\begin{tabular} {|l|l|l|l|l|l|l|}
+\hline
+ &  $\theta_2-\theta_1$    & $\theta_3-\theta_1$  & $\theta_5-\theta_1$  & $\theta_3-\theta_4$  & $\theta_5-\theta_4$ & $\theta_6-\theta_5$        \\ \hline
+ $\eta_1$&  0.000 &  0.000 &  0.000  &  0.000    &  0.000   &   0.000 \\ \hline
+ $\eta_2$& -0.150 &  0.259 &  0.816  & -0.298    &  0.259   &   0.150 \\ \hline
+ $\eta_3$&  0.500 &  0.500 &  0.000  &  0.000    & -0.500   &  -0.500 \\ \hline
+ $\eta_4$& -0.816 &  0.000 & -0.816  &  0.816    &  0.000   &   0.816 \\ \hline
+ $\eta_5$&  0.866 &  0.866 &  0.000  &  0.000    & -0.866   &   0.866 \\ \hline
+ $\eta_6$&  0.557 & -0.966 & -0.816  & -1.116    & -0.966   &   0.557\\ \hline
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+\begin{tabular}{cc}
+{\includegraphics[width=\factor]{\path/ThetaSub/theta 2 - theta 1.png}} &
+{\includegraphics[width=\factor]{\path/ThetaSub/theta 3 - theta 1.png}} \\
+{\includegraphics[width=\factor]{\path/ThetaSub/theta 5 - theta 1.png}}&
+{\includegraphics[width=\factor]{\path/ThetaSub/theta 3 - theta 4.png}}\\
+{\includegraphics[width=\factor]{\path/ThetaSub/theta 5 - theta 4.png}} &
+{\includegraphics[width=\factor]{\path/ThetaSub/theta 5 - theta 6.png}} \\
+%{\includegraphics[width=\factor]{\path/Theta/Theta.png}}
+\end{tabular}
+\caption{j,i plots network configuration 3.}
+\end{figure}
+
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\clearpage
+\section{Example: Network Configuration 4}
+{% Fourth network
+
+
+\renewcommand{\factor}{2.5in}
+\renewcommand{\path}{AllSetup/Setup1_4}
+
+
+
+
+\begin{figure}[H]
+\includegraphics[width=\factor,center]{\path/Setup1.png}
+\caption{Network configuration 3.}
+\end{figure}
+
+
+
+\begin{table}[H]
+\begin{tabular}{|l|l|l|l|l|l|}
+\hline
+& & EigenVector(V) & & & \\ \hline
+-0.408 &0.000   & 0.237 & -0.408  & 0.000  & 0.781  \\ \hline
+-0.408 &0.000   & 0.781 &  0.408 &  0.000 & -0.237\\ \hline
+-0.408 &-0.372  & -0.118 & -0.408 &  0.602 & -0.391 \\ \hline
+-0.408 & -0.602 & -0.391 & 0.408  &  -0.372  &  0.118  \\ \hline
+-0.408 & 0.372  & -0.118 & -0.408  & -0.602  & -0.391 \\ \hline
+-0.408 & 0.602  & -0.391 & 0.408  &  0.372  &  0.118  \\ \hline
+\end{tabular}
+\end{table}
+
+
+\begin{table}[H]
+\begin{tabular}{|l|l|l|l|}
+\hline
+ &  Eigenvalue($\lambda$)    &  Gamma($\gamma$) &  Q      \\ \hline
+ $\eta_1$&  0.00    &  0.90 &  0.00      \\ \hline
+ $\eta_2$&  53.475  &  0.90 &  -30.075    \\ \hline
+ $\eta_3$&  97.611 &  0.90 &  -11.972   \\ \hline
+ $\eta_4$&  280.000 &  0.90 &  8.165   \\ \hline
+ $\eta_5$&  366.525 &  0.90 &  -18.587   \\ \hline
+ $\eta_6$&  602.389 &  0.90 &  59.076  \\ \hline
+\end{tabular}
+\end{table}
+
+
+
+
+\begin{table}[H]
+\begin{tabular} {|l|l|l|l|l|l|}
+\hline
+ &  Natural Frequency($\omega$)    &  Damping Ratio($\zeta$) & Peak Time & Peak & Steady State      \\ \hline
+ $\eta_1$&  N/A    &  N/A    &  N/A   & N/A    &  N/A      \\ \hline
+ $\eta_2$&  7.313  &  0.062 &  0.430  & -1.026    &  -0.562  \\ \hline
+ $\eta_3$&  9.880  &  0.046 &  0.318  & -0.229    &  -0.123\\ \hline
+ $\eta_4$&  16.733 &  0.027 &  0.188  &  0.056    &  0.029 \\ \hline
+ $\eta_5$&  19.145 &  0.024 &  0.164  & -0.098    & -0.051 \\ \hline
+ $\eta_6$&  24.544 &  0.018 &  0.128  &  0.191    &  0.098 \\ \hline
+\end{tabular}
+\end{table}
+
+
+
+\begin{figure}[H]
+\begin{tabular}{cc}
+{\includegraphics[width=\factor]{\path/Eta/Eta1.png}} &
+{\includegraphics[width=\factor]{\path/Eta/Eta2.png}} \\
+{\includegraphics[width=\factor]{\path/Eta/Eta3.png}}&
+{\includegraphics[width=\factor]{\path/Eta/Eta4.png}}\\
+{\includegraphics[width=\factor]{\path/Eta/Eta5.png}} &
+{\includegraphics[width=\factor]{\path/Eta/Eta6.png}} \\
+%{\includegraphics[width=\factor]{\path/Eta/Eta.png}}
+\end{tabular}
+\caption{Eta plots network configuration 4.}
+\end{figure}
+\vspace*{\fill}
+
+
+
+\begin{figure}[H]
+\begin{tabular}{cc}
+{\includegraphics[width=\factor]{\path/Theta/Theta1.png}} &
+{\includegraphics[width=\factor]{\path/Theta/Theta2.png}} \\
+{\includegraphics[width=\factor]{\path/Theta/Theta3.png}}&
+{\includegraphics[width=\factor]{\path/Theta/Theta4.png}}\\
+{\includegraphics[width=\factor]{\path/Theta/Theta5.png}} &
+{\includegraphics[width=\factor]{\path/Theta/Theta6.png}} \\
+%{\includegraphics[width=\factor]{\path/Theta/Theta.png}}
+\end{tabular}
+\caption{Theta plots network configuration 4.}
+\end{figure}
+
+
+
+\begin{table}[H]
+\begin{tabular} {|l|l|l|l|l|l|l|}
+\hline
+ &  $\theta_2-\theta_1$    & $\theta_3-\theta_1$  & $\theta_5-\theta_1$  & $\theta_3-\theta_4$  & $\theta_5-\theta_4$ & $\theta_6-\theta_5$        \\ \hline
+ $\eta_1$&  0.000 &  0.000 &  0.000  &  0.000    &  0.000   &   0.000 \\ \hline
+ $\eta_2$& -0.204 &  -0.204 &  0.522  & -0.930    &  -0.204   &   0.204 \\ \hline
+ $\eta_3$&  0.000 &  0.000 &  0.000  &  0.707    &  0.707   &   0.707 \\ \hline
+ $\eta_4$& -0.707 &  0.707 &  0.000  &  0.707    &  0.000   &   0.000 \\ \hline
+ $\eta_5$&  0.866 &  0.866 &  0.000  &  0.000    & -0.866  &   0.866 \\ \hline
+ $\eta_6$&  0.842 & -0.842 & -1.314  & -0.370    & -0.842  &   0.842\\ \hline
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+\begin{tabular}{cc}
+{\includegraphics[width=\factor]{\path/ThetaSub/theta 2 - theta 1.png}} &
+{\includegraphics[width=\factor]{\path/ThetaSub/theta 3 - theta 1.png}} \\
+{\includegraphics[width=\factor]{\path/ThetaSub/theta 5 - theta 1.png}}&
+{\includegraphics[width=\factor]{\path/ThetaSub/theta 3 - theta 4.png}}\\
+{\includegraphics[width=\factor]{\path/ThetaSub/theta 5 - theta 4.png}} &
+{\includegraphics[width=\factor]{\path/ThetaSub/theta 5 - theta 6.png}} \\
+%{\includegraphics[width=\factor]{\path/Theta/Theta.png}}
+\end{tabular}
+\caption{j,i plots network configuration 4.}
+\end{figure}
+
+}
+
+
+\clearpage
+\section{Example: Network Configuration 5}
+{% Fifth network
+
+
+\renewcommand{\factor}{2.5in}
+\renewcommand{\path}{AllSetup/Setup1_5}
+
+
+
+
+\begin{figure}[H]
+\includegraphics[width=\factor,center]{\path/Setup1.png}
+\caption{Network configuration 5.}
+\end{figure}
+
+
+
+\begin{table}[H]
+\begin{tabular}{|l|l|l|l|l|l|}
+\hline
+& & EigenVector(V) & & & \\ \hline
+-0.408 & -0.227   & 0.000 & 0.290  & 0.577  & -0.604  \\ \hline
+-0.408 & -0.663  & 0.500 &  -0.190 &  -0.289 &  0.158\\ \hline
+-0.408 & -0.097 & -0.500 &  0.616 &  -0.289 &  0.333 \\ \hline
+-0.408 & 0.097 & -0.500 &  -0.616  & -0.289  &  -0.333 \\ \hline
+-0.408 & 0.227  &  0.000&  -0.290  &  0.577 &  0.604 \\ \hline
+-0.408 & 0.663  & 0.500 &   0.190 &  -0.289  &  -0.158  \\ \hline
+\end{tabular}
+\end{table}
+
+
+\begin{table}[H]
+\begin{tabular}{|l|l|l|l|}
+\hline
+ &  Eigenvalue($\lambda$)    &  Gamma($\gamma$) &  Q      \\ \hline
+ $\eta_1$&  0.00    &  0.90 &  0.00      \\ \hline
+ $\eta_2$&  91.991  &  0.90 &  -1.839    \\ \hline
+ $\eta_3$&  140.000&  0.90 &   -22.500   \\ \hline
+ $\eta_4$&  354.104 &  0.90 &  -19.308   \\ \hline
+ $\eta_5$&  420.000 &  0.90 &  12.990  \\ \hline
+ $\eta_6$&  673.905 &  0.90 &  -62.440  \\ \hline
+\end{tabular}
+\end{table}
+
+
+
+
+\begin{table}[H]
+\begin{tabular} {|l|l|l|l|l|l|}
+\hline
+ &  Natural Frequency($\omega$)    &  Damping Ratio($\zeta$) & Peak Time & Peak & Steady State      \\ \hline
+ $\eta_1$&  N/A    &  N/A    &  N/A   & N/A    &  N/A      \\ \hline
+ $\eta_2$&  9.591  &  0.047 &  0.328  &  -0.037    &  -0.020  \\ \hline
+ $\eta_3$&  11.832  &  0.038 &  0.266  & -0.303    &  -0.161\\ \hline
+ $\eta_4$&  18.818 &  0.024 &  0.167  &  -0.105    &  -0.055 \\ \hline
+ $\eta_5$&  20.494 &  0.022 &  0.153  &  0.060     &   0.031 \\ \hline
+ $\eta_6$&  25.960 &  0.017 &  0.121  &  -0.180    &  -0.093\\ \hline
+\end{tabular}
+\end{table}
+
+
+
+\begin{figure}[H]
+\begin{tabular}{cc}
+{\includegraphics[width=\factor]{\path/Eta/Eta1.png}} &
+{\includegraphics[width=\factor]{\path/Eta/Eta2.png}} \\
+{\includegraphics[width=\factor]{\path/Eta/Eta3.png}}&
+{\includegraphics[width=\factor]{\path/Eta/Eta4.png}}\\
+{\includegraphics[width=\factor]{\path/Eta/Eta5.png}} &
+{\includegraphics[width=\factor]{\path/Eta/Eta6.png}} \\
+%{\includegraphics[width=\factor]{\path/Eta/Eta.png}}
+\end{tabular}
+\caption{Eta plots network configuration 5.}
+\end{figure}
+\vspace*{\fill}
+
+
+
+\begin{figure}[H]
+\begin{tabular}{cc}
+{\includegraphics[width=\factor]{\path/Theta/Theta1.png}} &
+{\includegraphics[width=\factor]{\path/Theta/Theta2.png}} \\
+{\includegraphics[width=\factor]{\path/Theta/Theta3.png}}&
+{\includegraphics[width=\factor]{\path/Theta/Theta4.png}}\\
+{\includegraphics[width=\factor]{\path/Theta/Theta5.png}} &
+{\includegraphics[width=\factor]{\path/Theta/Theta6.png}} \\
+%{\includegraphics[width=\factor]{\path/Theta/Theta.png}}
+\end{tabular}
+\caption{Theta plots network configuration 5.}
+\end{figure}
+
+
+
+\begin{table}[H]
+\begin{tabular} {|l|l|l|l|l|l|l|}
+\hline
+ &  $\theta_2-\theta_1$    & $\theta_3-\theta_1$  & $\theta_5-\theta_1$  & $\theta_3-\theta_4$  & $\theta_5-\theta_4$ & $\theta_6-\theta_5$        \\ \hline
+ $\eta_1$&  0.000 &  0.000 &  0.000  &  0.000    &  0.000   &   0.000 \\ \hline
+ $\eta_2$&  0.000 & -0.372 &  0.372  &  0.230    &   0.974  &   0.230 \\ \hline
+ $\eta_3$& -0.544 & -0.355 & -0.355  &  0.273    &  0.273   &  -0.273 \\ \hline
+ $\eta_4$&  0.816 &  0.000 &  0.000  & -0.816    & -0.816   &   0.816 \\ \hline
+ $\eta_5$&  0.000 &  0.602 & -0.602  &  0.974    & -0.230  &    0.974 \\ \hline
+ $\eta_6$&  1.018 & -1.172 & -1.172  & -0.509    & -0.509  &    0.509\\ \hline
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+\begin{tabular}{cc}
+{\includegraphics[width=\factor]{\path/ThetaSub/theta 2 - theta 1.png}} &
+{\includegraphics[width=\factor]{\path/ThetaSub/theta 3 - theta 1.png}} \\
+{\includegraphics[width=\factor]{\path/ThetaSub/theta 5 - theta 1.png}}&
+{\includegraphics[width=\factor]{\path/ThetaSub/theta 3 - theta 4.png}}\\
+{\includegraphics[width=\factor]{\path/ThetaSub/theta 5 - theta 4.png}} &
+{\includegraphics[width=\factor]{\path/ThetaSub/theta 5 - theta 6.png}} \\
+%{\includegraphics[width=\factor]{\path/Theta/Theta.png}}
+\end{tabular}
+\caption{j,i plots network configuration 5.}
+\end{figure}
+
+}
+\end{document}

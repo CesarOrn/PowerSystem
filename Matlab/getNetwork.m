@@ -3,12 +3,12 @@ function [A,P]=getNetwork(name)
 %option:
     %network1
     %network2
-    %bottleNeck
+    %network3 Bottle necknetwork.
     %default: network1
 
 %A: return coupling matrix.
 KOUPLING=140;
-
+    % 7 Connection network.
     if(name=='network1')
         A=zeros(6);
         A(1,2)=KOUPLING;
@@ -44,7 +44,7 @@ KOUPLING=140;
 
         return ;
     end
-
+        % 8 Connection network.
         if(name=='network2')
         A=zeros(6);
         A(1,2)=KOUPLING;
@@ -63,7 +63,7 @@ KOUPLING=140;
         A(3,4)=KOUPLING;
 
         A(4,5)=KOUPLING;
-        A(5,4)=KOUPLING;bottleNeck
+        A(5,4)=KOUPLING;
 
         A(6,5)=KOUPLING;
         A(5,6)=KOUPLING;
@@ -83,7 +83,7 @@ KOUPLING=140;
         return;
 
         end
-
+        % Bottle neck network
         if(name=='network3')
 
         A=zeros(7);

@@ -26,6 +26,7 @@
 
 function [val]=DDwFailure(coupling,gamma,power,Time,numLines)
 
+coupling
 % number of elements
 n=size(coupling,1);
 

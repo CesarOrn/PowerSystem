@@ -82,10 +82,96 @@ val{13,k}=strcat('Line',num2str(j),', ',num2str(i));
 val{14,k}=[X(:,1:n)*V(2,:)'-X(:,1:n)*V(1,:)';X2(:,1:n)*VF(2,:)'-X2(:,1:n)*VF(1,:)'];
 
 
+%
+%eta to function
+for i=1:size(V,2)
+    Lambda=val{3,1}(i,i);
+    omega=sqrt(val{3,1}(i,i));
+    zeta=0.9/(2*omega);
+    
+    Qs=val{4,1}(i,1);
+    
+    const=Qs/Lambda;
+    
+   leftFunc{1,i}=@YF;
+   leftFunc{2,i}=omega;
+   leftFunc{3,i}=zeta;
+   leftFunc{4,i}=const;
+end
+
+for i=1:size(V,2)
+    Lambda=val{8,1}(i,i);
+    omega=sqrt(val{8,1}(i,i));
+    zeta=0.9/(2*omega);
+    
+    Qs=val{9,1}(i,1);
+    
+    const=Qs/Lambda;
+    
+   rightFunc{1,i}=@YF;
+   rightFunc{2,i}=omega;
+   rightFunc{3,i}=zeta;
+   rightFunc{4,i}=const;
+   
+end
+%
 
 figure('Name','Measured Data');
 plot(val{12,1},abs(val{14,1}));
 
 
 figure('Name','Measured Data');
-plot(val{12,1},val{11,1});
+plot(val{12,1},val{11,1}(:,1:n));
+for j =2:size(V)
+for i = 1:size(Time,2)
+    data(i,j)=YF(Time(i),leftFunc{2,j},leftFunc{3,j},leftFunc{4,j});
+end
+end
+figure('Name','eta from func');
+plot(Time,data);
+
+for i = 1:size(Time,2)
+    fData(i)=compostion(Time(i),leftFunc,val{2,1},[2 1]);
+end
+
+figure('Name','Plot flow');
+plot(Time,fData);
+
+GoldenSectionSearch(@compostion,1,2,1e-5,leftFunc,val{2,1},[2 1])
+
+function Y = YF(t,omega,zeta,const) 
+    expo=exp(-1*zeta*omega*t)/sqrt(1-zeta^2);
+    trig=sin(omega*sqrt(1-zeta^2)*t-acos(zeta));
+    Y=const*(1+(expo*trig));
+end
+
+
+
+function Y = compostion(t,funLeft,eig,line) 
+Y=0;
+for i=2:size(eig)
+    v=eig(line(2),i);
+    omega=funLeft{2,i};
+    zeta=funLeft{3,i};
+    const=funLeft{4,i};
+    expo=exp(-1*zeta*omega*t)/sqrt(1-zeta^2);
+    trig=sin(omega*sqrt(1-zeta^2)*t-acos(zeta));
+    Y=Y+v*const*(1+(expo*trig));
+end
+
+for i=2:size(eig)
+    v=eig(line(1),i);
+    omega=funLeft{2,i};
+    zeta=funLeft{3,i};
+    const=funLeft{4,i};
+    expo=exp(-1*zeta*omega*t)/sqrt(1-zeta^2);
+    trig=sin(omega*sqrt(1-zeta^2)*t-acos(zeta));
+    Y=Y+v*-1*const*(1+(expo*trig));
+end
+line(1);
+eig(line(1),:);
+
+line(2);
+eig(line(2),:);
+
+end

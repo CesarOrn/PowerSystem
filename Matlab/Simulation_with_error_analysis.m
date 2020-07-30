@@ -10,7 +10,7 @@ clear; clc; close all;
 n =10;
 
 % Create a (random) matrix 
-LK=getNetwork('network1')
+[LK,Power]=getNetwork('network1')
 A =  full(BAgraph(n));
 %A = A-diag(diag(A));
 %A= A+transpose(A);

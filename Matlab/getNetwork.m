@@ -7,7 +7,7 @@ function [A,P]=getNetwork(name)
     %default: network1
 
 %A: return coupling matrix.
-KOUPLING=140;
+KOUPLING=1;
     % 7 Connection network.
     if(name=='network1')
         A=zeros(6);
@@ -34,12 +34,12 @@ KOUPLING=140;
 
         P=zeros(6,1);
 
-        P(1,1)=  40;
-        P(2,1)= -20;
-        P(3,1)= -25;
-        P(4,1)=  40;
-        P(5,1)= -25;
-        P(6,1)= -10;
+        P(1,1)=  4;
+        P(2,1)= -1;
+        P(3,1)= -2;
+        P(4,1)=  2;
+        P(5,1)= -2;
+        P(6,1)= -1;
 
 
         return ;

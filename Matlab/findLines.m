@@ -4,7 +4,7 @@
 %data are the Theta_j - Theta_i coefficients
 %line is a cell that contian the Theta_j- Theta_i.
 
-function [line,data]= findLines(coupling,eigV)
+function [line,data,linePair]= findLines(coupling,eigV)
     k=0;
     dataSize=size(eigV,1);
     % looks a upper triangule of the matrix. If A(i,j) is not equal to 0. We have
@@ -18,6 +18,7 @@ function [line,data]= findLines(coupling,eigV)
                 lineStr=strcat('Line:',num2str(j),',',num2str(i));
                 line{k,:}=[lineStr];
                 data(k,:)=linePower;
+                linePair(k,:)=[j, i];
 
             end
         end

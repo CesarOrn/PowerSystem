@@ -5,7 +5,7 @@ clear; clc; close all;
 %
 % To use ode45, we convert the n second order equations 2n first order equations 
 
-
+%coupling=full(BAgraph(100));
 
 % Create a (random) matrix 
 [coupling,P]=getNetwork('network1');
@@ -13,11 +13,14 @@ clear; clc; close all;
 % Dimension of the system 
 n =size(coupling,1);
 
+%P=rand(n,1);
+%P=P-mean(P);
 
 % Create the Laplacian
 L = diag(sum(coupling,2)) - coupling;
 
 gamma=0.9
+
 
 % Perform diagonalization
 [V,Lambda] = eig(L);
@@ -47,7 +50,7 @@ QF= VF \ P;
         
 %simulation will start with these inital conditions. Line
 %has failed.
-Init =X(size(X,1),:)
+Init =X(size(X,1),:);
 
      
 diagonalized_dynamics = @(t,x) [zeros(n), eye(n); -LambdaF, -gamma*eye(n)] * x + [zeros(n,1); QF];
@@ -81,7 +84,7 @@ val{14,k}=[X(:,1:n)*V(2,:)'-X(:,1:n)*V(1,:)';X2(:,1:n)*VF(2,:)'-X2(:,1:n)*VF(1,:
 Y=val{11,1};
 T=val{12,1};
 
-
+fprintf('simulating finished\n');
 
 
 for i=1:size(V,2)
@@ -116,6 +119,8 @@ for i=1:size(V,2)
    
 end
 
+fprintf('function etas\n');
+
 figure('Name','Measured Data');
 plot(val{12,1},val{11,1}(:,1:n));
 for j =2:size(V)
@@ -128,35 +133,45 @@ for j =2:size(V)
     data(:,j)=[Left;Left(size(Left,1))+Right];
 end
 
+fprintf('Starting trig\n');
+
 for j =2:size(V)
-    for i = 1:3
+    for i = 1:4
+        k=(i-1)*3+1
+        [peakT,peak]=MaxTrig(i*0.90,leftFunc{2,j},leftFunc{3,j},leftFunc{4,j});
+        LeftM(k,1)=peakT;
+        LeftM(k,2)=peak;
+        
         [peakT,peak]=MaxTrig(i,leftFunc{2,j},leftFunc{3,j},leftFunc{4,j});
-        LeftM(i,1)=peakT;
-        LeftM(i,2)=peak;
+        LeftM(k+1,1)=peakT;
+        LeftM(k+1,2)=peak;
+        
+        [peakT,peak]=MaxTrig(i*1.10,leftFunc{2,j},leftFunc{3,j},leftFunc{4,j});
+        LeftM(k+2,1)=peakT;
+        LeftM(k+2,2)=peak;
+        
+        [peakT,peak]=MaxTrig(i*0.90,rightFunc{2,j},rightFunc{3,j},rightFunc{4,j});
+        RightM(k,1)=peakT;
+        RightM(k,2)=peak;
         
         [peakT,peak]=MaxTrig(i,rightFunc{2,j},rightFunc{3,j},rightFunc{4,j});
-        RightM(i,1)=peakT;
-        RightM(i,2)=peak;
+        RightM(k+1,1)=peakT;
+        RightM(k+1,2)=peak;
+        
+        [peakT,peak]=MaxTrig(i*1.10,rightFunc{2,j},rightFunc{3,j},rightFunc{4,j});
+        RightM(k+2,1)=peakT;
+        RightM(k+2,2)=peak;
     end
     
-    syms x
-    S1=(LeftM(1,2))/(LeftM(1,1));
-    S2=(LeftM(2,2)-LeftM(1,2))/(LeftM(2,1)-LeftM(1,1));
-    S3=(LeftM(3,2)-LeftM(2,2))/(LeftM(3,1)-LeftM(2,1));
-    LeftP=piecewise(x<LeftM(1,1),S1*x,LeftM(1,1)<x<LeftM(2,1),S2*(x-LeftM(1,1))+LeftM(1,2),LeftM(2,1)<x<LeftM(3,1),S3*(x-LeftM(2,1))+LeftM(2,2),leftFunc{4,j});
-    leftFunc{4,j}
-    
-    S1=(RightM(1,2))/(RightM(1,1));
-    S2=(RightM(2,2)-RightM(1,2))/(RightM(2,1)-RightM(1,1));
-    S3=(RightM(3,2)-RightM(2,2))/(RightM(3,1)-RightM(2,1));
-    RightP=piecewise(x<RightM(1,1),S1*x,RightM(1,1)<x<RightM(2,1),S2*(x-RightM(1,1))+RightM(1,2),RightM(2,1)<x<RightM(3,1),S3*(x-RightM(2,1))+RightM(2,2),rightFunc{4,j});
-    rightFunc{4,j}
-    rightFunc{4,j}+leftFunc{4,j}
-    LTD=subs(LeftP, x, Time)';
-    RTD=subs(RightP, x, Time)';
-    trigDataS(:,j)=[LTD;LTD(size(LTD,1))+RTD];
+ 
+    LTD=peiceWiseGraph(LeftM(:,1),LeftM(:,2),Time',leftFunc{4,j})';
+    RTD=peiceWiseGraph(RightM(:,1),RightM(:,2),Time',rightFunc{4,j})';
+
+    trigDataS(:,j)=[LTD,LTD(size(LTD,2))+RTD];
 end
 
+
+fprintf('trig finished\n');
 
 trigData=double(trigDataS);
 
@@ -167,54 +182,8 @@ figure('Name','eta from tri');
 plot([Time Time+Time(size(Time,2))],trigData);
 
 
-fprintf('plotting');
+fprintf('plotting\n');
 
-
-figure('Name','Eta w Trig');
-
-subplot(3,3,1)
-plot(T,[Y(:,1),trigData(:,1)]);
-xlabel('Time');
-ylabel('Eta');
-title('EtaWTri');
-subplot(3,3,2)
-plot(T,[Y(:,2),trigData(:,2)]);
-xlabel('Time');
-ylabel('Eta');
-title('EtaWTri');
-
-subplot(3,3,3)
-plot(T,[Y(:,3),trigData(:,3)]);
-xlabel('Time');
-ylabel('Eta');
-title('EtaWTri');
-
-subplot(3,3,4)
-plot(T,[Y(:,4),trigData(:,4)]);
-xlabel('Time');
-ylabel('Eta');
-title('EtaWTri');
-
-subplot(3,3,5)
-plot(T,[Y(:,5),trigData(:,5)]);
-xlabel('Time');
-ylabel('Eta');
-title('EtaWTri');
-
-
-subplot(3,3,6)
-plot(T,[Y(:,6),trigData(:,6)]);
-xlabel('Time');
-ylabel('Eta');
-title('EtaWTri');
-
-
-
-subplot(3,3,7)
-plot(T,[Y(:,1:n),trigData]);
-xlabel('Time');
-ylabel('PowerData');
-title('Power');
 
 
 
@@ -231,9 +200,6 @@ for i =1:size(Pairs,1)
     lineData(:,i)=[LD;LDA];
 end
 
-SizesF=size(trigData,1)/2;
-SizesF2=size(trigData,1);
-[sum(trigData(1:SizesF,:).*val{2,1}(:,Pairs(1,2))',2),sum(trigData(1:SizesF,:).*val{2,1}(:,Pairs(1,1))',2)]
 
 for i =1:size(Pairs,1)
     
@@ -248,13 +214,138 @@ for i =1:size(Pairs,1)
     lineData2(:,i)=[LD2;LDA2];
 end
 
+[peaktim,error]=flowError(lineData,lineData2,T);
+
+figure('Name','Coupling Matrix');
+G = graph(coupling)
+plot(G)
+
+figure('Name','Eta w Trig');
+
+subplot(3,3,1)
+plot(T,[Y(:,1),trigData(:,1)]);
+%for i=1:size(peaktim,1)
+%    xline(T([peaktim(i,3)]));
+%    xline(T([peaktim(i,4)]));
+%end
+xline(T([peaktim(4,3)]));
+xline(T([peaktim(4,4)]));
+xlabel('Time');
+ylabel('Eta');
+title('EtaWTri');
+
+subplot(3,3,2)
+plot(T,[Y(:,2),trigData(:,2)]);
+%for i=1:size(peaktim,1)
+%    xline(T([peaktim(i,3)]));
+%    xline(T([peaktim(i,4)]));
+%end
+xline(T([peaktim(4,3)]));
+xline(T([peaktim(4,4)]));
+xlabel('Time');
+ylabel('Eta');
+title('EtaWTri');
+
+subplot(3,3,3)
+plot(T,[Y(:,3),trigData(:,3)]);
+%for i=1:size(peaktim,1)
+%    xline(T([peaktim(i,3)]));
+%    xline(T([peaktim(i,4)]));
+%end
+xline(T([peaktim(4,3)]));
+xline(T([peaktim(4,4)]));
+xlabel('Time');
+ylabel('Eta');
+title('EtaWTri');
+
+subplot(3,3,4)
+plot(T,[Y(:,4),trigData(:,4)]);
+%for i=1:size(peaktim,1)
+%    xline(T([peaktim(i,3)]));
+%    xline(T([peaktim(i,4)]));
+%end
+xline(T([peaktim(4,3)]));
+xline(T([peaktim(4,4)]));
+xlabel('Time');
+ylabel('Eta');
+title('EtaWTri');
+
+subplot(3,3,5)
+plot(T,[Y(:,5),trigData(:,5)]);
+%for i=1:size(peaktim,1)
+%    xline(T([peaktim(i,3)]));
+%    xline(T([peaktim(i,4)]));
+%end
+xline(T([peaktim(4,3)]));
+xline(T([peaktim(4,4)]));
+xlabel('Time');
+ylabel('Eta');
+title('EtaWTri');
+
+
+subplot(3,3,6)
+plot(T,[Y(:,6),trigData(:,6)]);
+%for i=1:size(peaktim,1)
+%    xline(T([peaktim(i,3)]));
+%    xline(T([peaktim(i,4)]));
+%end
+xline(T([peaktim(4,3)]));
+xline(T([peaktim(4,4)]));
+xlabel('Time');
+ylabel('Eta');
+title('EtaWTri');
+
+
+
+subplot(3,3,7)
+plot(T,[Y(:,1:n),trigData]);
+%for i=1:size(peaktim,1)
+%    xline(T([peaktim(i,3)]));
+%    xline(T([peaktim(i,4)]));
+%end
+xline(T([peaktim(4,3)]));
+xline(T([peaktim(4,4)]));
+xlabel('Time');
+ylabel('PowerData');
+title('Power');
+
+
+figure('Name','Powers');
+
+subplot(2,2,1)
+bar(error(:,1))
+xlabel('Line');
+ylabel('Error');
+title('Time Error First Half');
+
+subplot(2,2,2)
+bar(error(:,2))
+xlabel('Line');
+ylabel('Error');
+title('Power Error First Half');
+
+subplot(2,2,3)
+bar(error(:,3))
+xlabel('Line');
+ylabel('Error');
+title('Time Error Second Half');
+
+subplot(2,2,4)
+bar(error(:,4))
+xlabel('Line');
+ylabel('Error');
+title('Power Error Second Half');
+
+
+
+
 figure('Name','Powers');
 plot(T,lineData);
 xlabel('Time');
 ylabel('PowerData');
 title('Power');
 
-figure('Name','Powers wTrig');
+figure('Name','Powers wTrig\n');
 
 subplot(3,3,1)
 plot(T,[lineData(:,1),lineData2(:,1)]);
@@ -321,6 +412,16 @@ plot(T,flowER);
 xlabel('Time');
 ylabel('Error');
 title('Flow Error');
+
+G = table(T,Y);
+
+writetable(G,'plot.txt');
+type plot.txt;
+
+K = table(T,trigData);
+
+writetable(K,'trig.txt');
+type trig.txt;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

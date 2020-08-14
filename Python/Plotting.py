@@ -1,17 +1,33 @@
 
 import matplotlib.pyplot as plt
 import networkx as nx
+from networkx.drawing.nx_agraph import to_agraph
 import numpy as np
 import csv
 import matplotlib.cm as cm
 import colorsys
 from network import *
+import graphviz
 
 def clamp(num, min_value, max_value):
    return max(min(num, max_value), min_value)
 
 
-networkData=getNetwork("smallNetwork")
+g1 = nx.MultiGraph()
+
+node1 = 'a'
+node2 = 'b'
+
+g1.add_edge(node1,node2,key='one')
+g1.add_edge(node1,node2,key='two')
+
+A = to_agraph(g1)
+A.add_subgraph()
+
+A.draw('test2.png', prog='dot')
+
+networkData=getNetwork("starCom")
+
 
 print('hello')
 P=networkData[1]
@@ -20,8 +36,7 @@ max_value = np.max(P)
 GR=networkData[0]
 #GR= nx.Graph([(0,1),(1,2),(0,2),(0,4),(3,2),(3,4),(5,4)])
 #G = nx.adjacency_matrix(GR)
-
-
+[print(e) for e in GR.edges]
 
 pos=nx.kamada_kawai_layout(GR)
 
@@ -29,7 +44,10 @@ pos=nx.kamada_kawai_layout(GR)
 loopSize=nx.number_of_nodes(GR)
 print('size:',loopSize)
 nodeSize=1000
-plt.figure(1)
+fig, axes = plt.subplots(nrows=1, ncols=1,figsize=(6,5))
+ax = axes
+
+
 for i in  range(loopSize):
 
     if(P[i]>=0):
@@ -50,7 +68,7 @@ for i in  range(loopSize):
 
 
 #plot edges
-nx.draw_networkx_edges(GR,pos,width=1.25,alpha=1.0)
+nx.draw_networkx_edges(GR,pos,width=1.25,alpha=1.0, arrows=True)
 
 
 #Label
@@ -63,10 +81,12 @@ for i in range(loopSize):
 label={ i:j for i,j in labels.items() if i in pos}
 
 nx.draw_networkx_labels(GR, pos, label, font_size=10)
+#ax[0].text(0.5, -0.1, '(a)', transform=ax[0].transAxes,fontsize=16, fontweight='regular', va='bottom', ha='center')
+ax.axis('off')
 
-#show
-plt.axis("off")
-
+A = to_agraph(GR)
+A.layout('dot')
+A.draw('multi.png')
 
 
 
@@ -101,7 +121,7 @@ cmap = plt.get_cmap('gist_rainbow')
 colors = [cmap(i) for i in np.linspace(0, 0.5, 6)]
 
 
-plt.figure(2)
+plt.figure(2,figsize=(6,5))
 for i, color in enumerate(colors,start=0):
     plt.plot(X, Y[i])
 

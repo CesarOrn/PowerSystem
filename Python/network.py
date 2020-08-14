@@ -1,4 +1,6 @@
 import networkx as nx
+import numpy as np
+import graphviz
 
 def getNetwork(name):
 
@@ -15,12 +17,27 @@ def getNetwork(name):
         P= [3,1,1,1,-1,-1,-1,-1,-1,-1]
 
     elif(name=="starCom"):
-        G=nx.Graph([(0,1),(1,0),(1,2),(2,1),(2,2)])
+
+        G=nx.MultiDiGraph()
+        G.add_edge(0, 1, key=str(3) )
+        G.add_edge(1, 0, key=str(2) )
+        G.add_edge(1, 2, key=str(1) )
+        G.add_edge(2, 1, key=str(2) )
+        G.add_edge(2, 2, key=str(1) )
         W=[3,1,2,1,2]
-        P= [3,1,-1]]
+        P= [3,1,-1]
+
+    elif(name=="bottleNetwork"):
+        G=nx.Graph([(1,0),(0,2),(1,2),(1,3),(1,4),(2,3),(5,4),(6,4),(6,5)])
+        P= [3,-1,-1,1,-1,-2,1]
+
+    elif(name=="bottleNetworkBroken"):
+
+        G=nx.Graph([(1,0),(0,2),(1,2),(1,3),(2,3),(5,4),(6,4),(6,5)])
+        P= [3,-1,-1,1,-1,-2,1]
 
     else:
         G=nx.Graph([(1,2),(0,1)])
         P= [2,-3,1]
 
-    return G,P,W
+    return G,P

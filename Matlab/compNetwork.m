@@ -106,7 +106,7 @@ switch name
         A(7,5)=1;
         A(5,7)=1;
         
-        A(7,6)=1twoComp;
+        A(7,6)=1;
         A(6,7)=1;
         
     otherwise

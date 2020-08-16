@@ -118,6 +118,8 @@ ylabel('Eta')
 saveas(gcf,strcat('Data','.png'));
 
 
+
+
 initsize
 for i=1:initsize
     index=1+i;
@@ -221,6 +223,21 @@ writematrix(pert{12,index},name,'Sheet',1,'Range',' U2');
     
 end
 
+T=[pert{8,1}; pert{10,1}];
+I=[pert{7,2}(:,1:n); pert{9,2}(:,1:n)]
+    
+PP=[pert{7,3+psize}(:,1:n); pert{9,3+psize}(:,1:n)];
+
+G = table(T,I);
+
+writetable(G,'powerPert.txt');
+type powerPert.txt;
+
+K = table(T,PP);
+
+writetable(K,'InitPert.txt');
+type InitPert.txt;
+
 E(1,1)=1;
 E(6,3)=1;
 
@@ -276,6 +293,8 @@ OQ=pert{3,1}
 
 IC=pert{5,1}
 IP=pert{6,1}
+
+
 
 
 initsizeq
@@ -381,3 +400,23 @@ writematrix(pert{12,index},name,'Sheet',1,'Range',' U2');
     saveas(gcf,strcat(baseName,'.png'));
     
 end
+
+[pert{8,index}; pert{10,index}],[pert{7,index}(:,1:nq); pert{9,index}(:,1:nq)]
+[pert{8,index}; pert{10,index}],[pert{7,index}(:,1:nq); pert{9,index}(:,1:nq)]
+
+T=[pert{8,1}; pert{10,1}];
+I=[pert{7,2}(:,1:nq); pert{9,2}(:,1:nq)]
+    
+PP=[pert{7,2+psize}(:,1:nq); pert{9,2+psize}(:,1:nq)];
+
+
+
+G = table(T,I);
+
+writetable(G,'powerQPert.txt');
+type powerQPert.txt;
+
+K = table(T,PP);
+
+writetable(K,'InitQPert.txt');
+type InitQPert.txt;

@@ -19,11 +19,12 @@ def getNetwork(name):
     elif(name=="starCom"):
 
         G=nx.MultiDiGraph()
-        G.add_edge(0, 1, key=str(3) )
-        G.add_edge(1, 0, key=str(2) )
-        G.add_edge(1, 2, key=str(1) )
-        G.add_edge(2, 1, key=str(2) )
-        G.add_edge(2, 2, key=str(1) )
+        G.nodes(data=True)
+        G.add_edge(0, 1, label=str(3) )
+        G.add_edge(1, 0, label=str(2) )
+        G.add_edge(1, 2, label=str(1) )
+        G.add_edge(2, 1, label=str(2) )
+        G.add_edge(2, 2, label=str(1) )
         W=[3,1,2,1,2]
         P= [3,1,-1]
 
@@ -39,5 +40,10 @@ def getNetwork(name):
     else:
         G=nx.Graph([(1,2),(0,1)])
         P= [2,-3,1]
+
+    #'overlap' : 'false'
+    G.graph['graph']={'rankdir':'TD','pad':'1,1', 'size' :'7.75,10.25!','dpi':'300'}
+    G.graph['node']={'style':'filled','fixedsize': 'true','width': '0.5','height': '0.5'}
+    G.graph['edge']={'arrowsize':'1.2','penwidth':'0.8'}
 
     return G,P

@@ -15,7 +15,7 @@ import math
 def clamp(num, min_value, max_value):
    return max(min(num, max_value), min_value)
 
-def trans(pos,amount=90):
+def trans(pos,amount=150):
     NewPos={}
     for (node, (x,y)) in pos.items():
         print(amount)
@@ -32,7 +32,8 @@ def trans(pos,amount=90):
         NewPos[node]=[out[0,0],out[1,0]]
     return NewPos
 
-networkData=getNetwork("star")
+networkData=getNetwork("starCom")
+
 
 
 print('hello')
@@ -45,12 +46,16 @@ GR=networkData[0]
 
 pos=nx.kamada_kawai_layout(GR)
 
-pos=trans(pos,0)
+pos=trans(pos,150)
 
 
-scale=2.8
+scale=2.1
 for (node, (x,y)) in pos.items():
-    GR.nodes[node]['pos']=str(scale*x)+","+str(scale*y)+"!"
+    if (node ==1 or node ==2 or node ==3):
+        #GR.nodes[node]['pos']=str((scale/2)*x)+","+str((scale/2)*y)+"!"
+        GR.nodes[node]['pos']=str(scale*x)+","+str(scale*y)+"!"
+    else:
+        GR.nodes[node]['pos']=str(scale*x)+","+str(scale*y)+"!"
 
 
 GR=networkData[0]
@@ -74,11 +79,13 @@ for i in  range(loopSize):
         print('scale is',scale)
         if i==0:
             c='g'
+            #GR.nodes[i]['fillcolor']="#00bfbf"
+            GR.nodes[i]['fillcolor']="#00ff00"
         else:
+            GR.nodes[i]['fillcolor']="#00ff00"
             c='g'
         #node_color=colorsys.hls_to_rgb(0.30, clamp(scale, 0.0, 0.7), 1)
         nx.draw_networkx_nodes(GR,pos,nodelist=[i], node_color=c,node_size=nodeSize, alpha=1.0,node_shape='s')
-        GR.nodes[i]['fillcolor']="#00ff00"
         GR.nodes[i]['shape']="square"
     else:
         #Consumer
@@ -175,4 +182,4 @@ plt.ylabel('$\eta$', fontsize=14)
 #plt.ylabel('$\theta$', fontsize=14)
 plt.tick_params(axis='x', labelsize=12)
 plt.tick_params(axis='y', labelsize=12)
-plt.show()
+#plt.show()

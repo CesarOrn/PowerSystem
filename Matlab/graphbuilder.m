@@ -2,11 +2,11 @@
 
 clc
 clear
-n =3;
+n =7;
 gamma=0.9
 
 % get network and power
-[A, P] = symmetricNetwork('starquo')
+[A, P] = symmetricNetwork('7node')
 %A = A-diag(diag(A));
 %A= A+transpose(A);
 
@@ -16,7 +16,12 @@ L = diag(sum(A,2)) - A
 coupling=A;
 dataSize=size(coupling);
 
-[V,Lambda] = eig(L);
+[V,Lambda] = eig(-L);
+for j=1:n
+    Lambda1(j,1)=Lambda(j,j)
+end
+
+[Vl,Lambl]=eig((-L)');
 [line, ~]=findLines(coupling,V);
 popo=size(line');
 numLines=popo(2);
@@ -45,11 +50,12 @@ x0 = zeros(2*n,1);
     end
     
 figure(1)
-plot(T,X2(:,1:n))
-xlabel('Time')
-ylabel('Flow');
+plot(T,X2(:,1:numLines))
+xlabel('Time','Fontsize',18)
+ylabel('\theta_j - \theta_i','Fontsize',18);
+
 
 figure (2)
 plot(T,X(:,1:n))
 xlabel('Time')
-ylabel('Displacement')
+ylabel('\theta')
